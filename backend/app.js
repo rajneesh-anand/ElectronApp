@@ -16,9 +16,7 @@ const userRouter = require("./routes/users");
 app.use("/api", customerRouter);
 app.use("/api", userRouter);
 
-app.get("/private", (req, res) =>
-  res.send("Only authenticated users can read this message.")
-);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => console.log(` Server is running on port ${port}`));
+module.exports = app;

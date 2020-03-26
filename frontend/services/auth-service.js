@@ -1,11 +1,11 @@
 const jwtDecode = require('jwt-decode');
 const request = require('request');
 const url = require('url');
-const envVariables = require('../env-variables');
+// const envVariables = require('../env-variables');
 const keytar = require('keytar');
 const os = require('os');
 
-const {apiIdentifier, auth0Domain, clientId} = envVariables;
+// const {apiIdentifier, auth0Domain, clientId} = envVariables;
 
 const redirectUri = `file:///callback`;
 
