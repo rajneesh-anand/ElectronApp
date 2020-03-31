@@ -1,6 +1,6 @@
 const path = require("path");
 const electron = require("electron");
-const { app, BrowserWindow, Menu } = electron;
+const { app, BrowserWindow, Menu, ipcMain } = electron;
 const shell = require("electron").shell;
 const url = require("url");
 
@@ -31,7 +31,25 @@ function createWindow() {
 		{
 			label: "Menu",
 			submenu: [
-				{ label: "Adjust Notification Value" },
+				{
+					label: "Home",
+					click() {
+						mainWindow.loadURL(
+							url.format({
+								pathname: path.join(__dirname, "renderers/index.html"),
+								protocol: "file:",
+								slashes: true
+							})
+						);
+					}
+				},
+
+				{
+					label: "Adjust Notification Value",
+					click() {
+						mainWindow.loadURL("https://electron.atom.io");
+					}
+				},
 				{
 					label: "CoinMarketCap",
 					click() {
@@ -59,7 +77,7 @@ function createWindow() {
 
 	mainWindow.loadURL(
 		url.format({
-			pathname: path.join(__dirname, "renderers/home.html"),
+			pathname: path.join(__dirname, "renderers/index.html"),
 			protocol: "file:",
 			slashes: true
 		})
@@ -98,8 +116,34 @@ function createWindow() {
 		// });
 	});
 
-	// mainWindow.webContents.on("did-finish-load", event => {
-	// 	mainWindow.webContents.send("fetchUsers", "This is from main");
+	mainWindow.webContents.on("did-finish-load", async function(event) {
+		await axios
+			.get(
+				`http://api.openweathermap.org/data/2.5/weather?q=delhi,IN&APPID=1e2e7f5d7c3e08e9dc1b2504463f9d59`
+			)
+			.then(response => {
+				mainWindow.webContents.send("weather:data", response.data.main);
+			});
+	});
+
+	// mainWindow.webContents.on("did-finish-load", async function(event) {
+	// 	await axios
+	// 		.get(
+	// 			`https://test.api.amadeus.com/v1/shopping/flight-offers?origin=DEL&destination=NYC&departureDate=2020-08-01`,
+
+	// 			{
+	// 				headers: {
+	// 					"Content-Type": "application/x-www-form-urlencoded",
+	// 					Authorization: `Bearer cHa4eXghbAOsJHAGq6S6ZiyGue0o`
+	// 				}
+	// 			}
+	// 		)
+	// 		.then(response => {
+	// 			mainWindow.webContents.send("flight:data", response.data.data);
+	// 		})
+	// 		.catch(error => {
+	// 			console.log(error);
+	// 		});
 	// });
 
 	// Listen for window being closed
@@ -121,12 +165,23 @@ app.on("activate", () => {
 	if (mainWindow === null) createWindow();
 });
 
-// ipcMain.on(`display-app-menu`, function(e, args) {
-// 	if (isWindows && mainWindow) {
-// 		menu.popup({
-// 			window: mainWindow,
-// 			x: args.x,
-// 			y: args.y
-// 		});
-// 	}
-// });
+ipcMain.on("add:user", async function(event, args) {
+	await axios
+		.post(
+			`http://localhost:3000/api/signup`,
+			args,
+
+			{
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json"
+				}
+			}
+		)
+		.then(Response => {
+			event.reply("user:added", Response.data.message);
+		})
+		.catch(error => {
+			console.log(error);
+		});
+});

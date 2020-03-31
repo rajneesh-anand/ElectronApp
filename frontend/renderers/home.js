@@ -1,4 +1,3 @@
-// const { remote, ipcRenderer, BrowserWindow } = require("electron");
 const electron = require("electron");
 const { ipcRenderer } = electron;
 const path = require("path");
@@ -8,13 +7,11 @@ let addWindow;
 
 function createaddWindow() {
 	const modalPath = path.join("file://", __dirname, "user.html");
-	// const { height, width } = electron.screen.getAllDisplays.workAreaSize;
-	// console.log(height + "--" + width);
 
 	addWindow = new BrowserWindow({
 		resizable: false,
-		height: 800,
-		width: 1000,
+		height: 600,
+		width: 800,
 		frame: false,
 		title: "Add User",
 		parent: electron.remote.getCurrentWindow(),
@@ -24,7 +21,7 @@ function createaddWindow() {
 		}
 	});
 
-	// addWindow.webContents.openDevTools();
+	addWindow.webContents.openDevTools();
 
 	addWindow.loadURL(modalPath);
 	addWindow.show();
@@ -34,10 +31,12 @@ function createaddWindow() {
 	});
 }
 
-const button = document.getElementById("fetchData");
+const button = document.getElementById("newUser");
 button.addEventListener("click", event => {
 	createaddWindow();
 });
+
+//addWindow.webContents.openDevTools();
 
 //const server = require("../../backend/app");
 // const authService = remote.require("./services/auth-service");
@@ -97,19 +96,36 @@ ipcRenderer.on("fetchUsers", (event, data) => {
 	});
 });
 
-// const webContents = remote.getCurrentWebContents();
+ipcRenderer.on("weather:data", (event, data) => {
+	console.log(data);
 
-// webContents.on("dom-ready", () => {
-// 	document.getElementById("fetchUsers").onclick = () => {
-// 		axios
-// 			.get("http://localhost:3000/api/users")
-// 			.then(response => {
-// 				const messageJumbotron = document.getElementById("name");
-// 				messageJumbotron.innerText = response.data.data.first_name;
-// 				messageJumbotron.style.display = "block";
-// 			})
-// 			.catch(error => {
-// 				if (error) throw new Error(error);
-// 			});
-// 	};
+	const temp = document.getElementById("live-temp");
+	const Mintemp = document.getElementById("temp-min");
+	const Maxtemp = document.getElementById("temp-max");
+	temp.innerHTML = data.temp;
+	Mintemp.innerHTML = data.temp_min;
+	Maxtemp.innerHTML = data.temp_max;
+});
+
+// ipcRenderer.on("flight:data", (event, data) => {
+// 	data.map((element, index) => {
+// 		console.log(element.offerItems);
+// 	});
+// 	let output = document.getElementById("flight");
+// 	let template = `<div class="col s12 m6">
+// 	<div class="card blue-grey darken-1">
+// 		<div class="card-content white-text">
+// 			<span class="card-title">Today's Weather</span>
+// 			<div id="current-time"></div>
+// 			<h1 id="live-temp"></h1>
+// 			<h1 id="temp-min"></h1>
+// 			<h1 id="temp-max"></h1>
+// 		</div>
+// 		<div class="card-action">
+// 			<a href="#">This is a link</a>
+// 			<a href="#">This is a link</a>
+// 		</div>
+// 	</div>
+// </div>`;
+// 	output.innerHTML = template;
 // });
