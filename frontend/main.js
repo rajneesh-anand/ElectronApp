@@ -116,6 +116,24 @@ function createWindow() {
 		// });
 	});
 
+	const customerData = async () => {
+		return await axios
+			.get(`http://localhost:3000/api/customers`)
+			.then(Response => {
+				return Response.data.data;
+			})
+			.catch(error => {
+				if (error) throw new Error(error);
+			});
+	};
+
+	customerData().then(data => {
+		console.log(data);
+		mainWindow.webContents.on("did-finish-load", event => {
+			mainWindow.webContents.send("fetchCustomers", data);
+		});
+	});
+
 	mainWindow.webContents.on("did-finish-load", async function(event) {
 		await axios
 			.get(
@@ -183,5 +201,27 @@ ipcMain.on("add:user", async function(event, args) {
 		})
 		.catch(error => {
 			console.log(error);
+		});
+});
+
+ipcMain.on("add:customer", async function(event, args) {
+	console.log(args);
+	await axios
+		.post(
+			`http://localhost:3000/api/customer`,
+			args,
+
+			{
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json"
+				}
+			}
+		)
+		.then(Response => {
+			event.reply("customer:added", Response.data.message);
+		})
+		.catch(error => {
+			event.reply("customer:added", error.response.data.message);
 		});
 });

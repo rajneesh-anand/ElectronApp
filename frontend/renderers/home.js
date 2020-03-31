@@ -4,6 +4,7 @@ const path = require("path");
 const BrowserWindow = electron.remote.BrowserWindow;
 
 let addWindow;
+let customerWindow;
 
 function createaddWindow() {
 	const modalPath = path.join("file://", __dirname, "user.html");
@@ -31,9 +32,40 @@ function createaddWindow() {
 	});
 }
 
+function createCustomerWindow() {
+	const modalPath = path.join("file://", __dirname, "customer.html");
+
+	customerWindow = new BrowserWindow({
+		resizable: false,
+		height: 1000,
+		width: 900,
+		frame: false,
+		title: "Add Customer",
+		parent: electron.remote.getCurrentWindow(),
+		modal: true,
+		webPreferences: {
+			nodeIntegration: true
+		}
+	});
+
+	customerWindow.webContents.openDevTools();
+
+	customerWindow.loadURL(modalPath);
+	customerWindow.show();
+
+	customerWindow.on("close", () => {
+		customerWindow = null;
+	});
+}
+
 const button = document.getElementById("newUser");
 button.addEventListener("click", event => {
 	createaddWindow();
+});
+
+const custButton = document.getElementById("newCustomer");
+custButton.addEventListener("click", event => {
+	createCustomerWindow();
 });
 
 //addWindow.webContents.openDevTools();
@@ -69,30 +101,176 @@ button.addEventListener("click", event => {
 // });
 // console.log(users);
 
+// ipcRenderer.on("fetchUsers", (event, data) => {
+// 	document.getElementById("search").addEventListener("click", event => {
+// 		$("#table").empty();
+
+// 		var codeBlock = `<table id="example" class="display responsive-table datatable-example">
+//         <thead>
+//             <tr>
+//                 <th>Name</th>
+//                 <th>Position</th>
+//                 <th>Office</th>
+//                 <th>Extn.</th>
+//                 <th>Start date</th>
+//                 <th>Salary</th>
+//             </tr>
+//         </thead>
+
+// 	</table>`;
+
+// 		document.getElementById("table").innerHTML = codeBlock;
+
+// 		data.map((element, index) => {
+// 			tbody = document.createElement("tbody");
+// 			document.getElementById("example").appendChild(tbody);
+// 			tr = document.createElement("tr");
+// 			tbody.appendChild(tr);
+// 			var td = document.createElement("td");
+// 			var td1 = document.createElement("td");
+// 			var td2 = document.createElement("td");
+
+// 			td.appendChild(document.createTextNode(element.first_name));
+// 			td1.appendChild(document.createTextNode(element.last_name));
+// 			td2.appendChild(document.createTextNode(element.email));
+// 			tr.appendChild(td);
+// 			tr.appendChild(td1);
+// 			tr.appendChild(td2);
+// 		});
+
+// 		$("#example").DataTable({
+// 			language: {
+// 				searchPlaceholder: "Search records",
+// 				sSearch: "",
+// 				sLengthMenu: "Show _MENU_",
+// 				sLength: "dataTables_length",
+// 				oPaginate: {
+// 					sFirst: '<i class="material-icons">chevron_left</i>',
+// 					sPrevious: '<i class="material-icons">chevron_left</i>',
+// 					sNext: '<i class="material-icons">chevron_right</i>',
+// 					sLast: '<i class="material-icons">chevron_right</i>'
+// 				}
+// 			}
+// 		});
+// 		$(".dataTables_length select").addClass("browser-default");
+// 	});
+// });
+
 ipcRenderer.on("fetchUsers", (event, data) => {
-	document.getElementById("search").addEventListener("click", event => {
-		const list = document.querySelector(".my-list");
+	document.getElementById("getCustomers").addEventListener("click", event => {
+		var codeBlock = ` <table id="example" class="display responsive-table datatable-example">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Extn.</th>
+                <th>Start date</th>
+               
+            </tr>
+        </thead>
+     
+	`;
 
-		data.map((element, index) => {
-			tbody = document.createElement("tbody");
-			document.getElementById("table0").appendChild(tbody);
-			tr = document.createElement("tr");
-			tbody.appendChild(tr);
-			var td = document.createElement("td");
-			var td1 = document.createElement("td");
-			var td2 = document.createElement("td");
+		document.getElementById("table").innerHTML = codeBlock;
 
-			td.appendChild(document.createTextNode(element.first_name));
-			td1.appendChild(document.createTextNode(element.last_name));
-			td2.appendChild(document.createTextNode(element.email));
-			tr.appendChild(td);
-			tr.appendChild(td1);
-			tr.appendChild(td2);
+		var table = $("#example").dataTable({
+			paging: true,
+			sort: true,
+			searching: true,
+			language: {
+				searchPlaceholder: "Search records",
+				sSearch: ""
+			},
+			// scrollY: "80vh",
+			pageLength: 100,
+			data: data,
+			columns: [
+				{ data: "email" },
+				{ data: "last_name" },
+				{ data: "email" },
+				{ data: "mobile" },
+				{ data: "phone" }
+			],
+			dom: "Bfrtip",
+			select: true,
 
-			// let li = document.createElement("li");
-			// list.appendChild(li);
-			// li.innerHTML += element.first_name;
+			buttons: [
+				{
+					text: "Edit selected Customer",
+
+					enabled: false
+				}
+			]
 		});
+
+		$("#example tbody").on("click", "tr", function() {
+			if ($(this).hasClass("selected")) {
+				$(this).removeClass("selected");
+			} else {
+				$("#example")
+					.dataTable()
+					.$("tr.selected")
+					.removeClass("selected");
+				$(this).addClass("selected");
+			}
+
+			console.log(
+				$(this)
+					.children(":first")
+					.text()
+			);
+		});
+
+		$("#example tbody").on("click", "tr", function() {
+			var selectedRows = $("tr.selected").length;
+			$("#example")
+				.DataTable()
+				.button(0)
+				.enable(selectedRows === 1);
+		});
+
+		// data.map((element, index) => {
+		// 	tbody = document.createElement("tbody");
+		// 	document.getElementById("example").appendChild(tbody);
+		// 	tr = document.createElement("tr");
+		// 	tbody.appendChild(tr);
+		// 	var td = document.createElement("td");
+		// 	var td1 = document.createElement("td");
+		// 	var td2 = document.createElement("td");
+		// 	var td3 = document.createElement("td");
+		// 	var td4 = document.createElement("td");
+		// 	var td5 = document.createElement("td");
+
+		// 	td.appendChild(document.createTextNode(element.first_name));
+		// 	td1.appendChild(document.createTextNode(element.last_name));
+		// 	td2.appendChild(document.createTextNode(element.email));
+		// 	td3.appendChild(document.createTextNode(element.first_name));
+		// 	td4.appendChild(document.createTextNode(element.last_name));
+		// 	td5.appendChild(document.createTextNode(element.email));
+		// 	tr.appendChild(td);
+		// 	tr.appendChild(td1);
+		// 	tr.appendChild(td2);
+		// 	tr.appendChild(td3);
+		// 	tr.appendChild(td4);
+		// 	tr.appendChild(td5);
+		// });
+
+		// $("#example").DataTable({
+		// 	language: {
+		// 		searchPlaceholder: "Search records",
+		// 		sSearch: "",
+		// 		sLengthMenu: "Show _MENU_",
+		// 		sLength: "dataTables_length",
+		// 		oPaginate: {
+		// 			sFirst: '<i class="material-icons">chevron_left</i>',
+		// 			sPrevious: '<i class="material-icons">chevron_left</i>',
+		// 			sNext: '<i class="material-icons">chevron_right</i>',
+		// 			sLast: '<i class="material-icons">chevron_right</i>'
+		// 		}
+		// 	}
+		// });
+		// $(".dataTables_length select").addClass("browser-default");
 	});
 });
 
