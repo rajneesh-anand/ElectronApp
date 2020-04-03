@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--Import Google Icon Font-->
+		<link
+			href="https://fonts.googleapis.com/icon?family=Material+Icons"
+			rel="stylesheet"
+		/>
+		<!--Import materialize.css-->
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+		/>
+
+		<!--Let browser know website is optimized for mobile-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<style>
+			.input-field {
+				margin-bottom: 0px !important;
+			}
+		</style>
+	</head>
+
+	<body onkeydown="return (event.keyCode!=13)" style="width:100%">
+		<div
+			class="row"
+			style="display: flex; padding-left: 1rem;padding-right: 1rem;"
+		>
+			<h6 class="flow-text">NEW INVOICE</h6>
+
+			<a id="btnClose" style="margin-left: auto; padding-top: 1rem;">
+				<i class="material-icons right">close</i></a
+			>
+		</div>
+		<div class="row" style="margin-top: 15px;">
+			<form method="post" class="col s12">
+				<div class="row" style="margin-bottom: 0px !important;">
+					<div class="input-field col s2">
+						<i class="material-icons prefix">person</i>
+						<input
+							placeholder=""
+							id="invoice_no"
+							type="text"
+							class="validate"
+							name="first_name"
+							required
+						/>
+						<label for="invoice_no">Invoice No.</label>
+					</div>
+					<div class="input-field col s2">
+						<i class="material-icons prefix">person</i>
+						<input
+							id="invoice_date"
+							type="text"
+							name="last_name"
+							class="datepicker"
+							required
+						/>
+						<label for="invoice_date">Invoice Date</label>
+					</div>
+					<div class="input-field col s2">
+						<i class="material-icons prefix">person</i>
+						<input
+							id="departure_date"
+							type="text"
+							name="last_name"
+							class="datepicker"
+							required
+						/>
+						<label for="departure_date">Departure Date</label>
+					</div>
+					<div class="input-field col s6">
+						<i class="material-icons prefix">person</i>
+						<input
+							id="agent_name"
+							type="text"
+							name="last_name"
+							class="validate"
+							required
+						/>
+						<label for="agent_name">Agent Name</label>
+					</div>
+				</div>
+				<div class="row" style="margin-bottom: 0px !important;">
+					<div class="input-field col s3">
+						<i class="material-icons prefix">add_location</i>
+						<input
+							id="ship_name"
+							name="address_line_two"
+							type="text"
+							class="validate"
+						/>
+						<label for="ship_name">Ship Name</label>
+					</div>
+					<div class="input-field col s3">
+						<i class="material-icons prefix">add_location</i>
+						<input
+							id="cruise"
+							type="text"
+							name="city"
+							class="validate"
+							required
+						/>
+						<label for="cruise">Cruise Company </label>
+					</div>
+					<div class="input-field col s2">
+						<i class="material-icons prefix">add_location</i>
+						<input
+							id="bookings"
+							type="text"
+							name="city"
+							class="validate"
+							required
+						/>
+						<label for="bookings">Booking </label>
+					</div>
+					<div class="input-field col s2">
+						<i class="material-icons prefix">near_me</i>
+						<input
+							id="cabin"
+							name="pincode"
+							type="text"
+							class="validate"
+							required
+							onkeypress="return ValidateNumbers(event)"
+						/>
+						<label for="cabin">Cabin</label>
+					</div>
+					<div class="input-field col s2">
+						<i class="material-icons prefix">near_me</i>
+						<input
+							id="cat_bkg"
+							name="pincode"
+							type="text"
+							class="validate"
+							required
+							onkeypress="return ValidateNumbers(event)"
+						/>
+						<label for="cat_bkg">Cat..Bkg</label>
+					</div>
+				</div>
+
+				<div class="row" style="margin-bottom: 0px !important;">
+					<div class="input-field col s4">
+						<i class="material-icons prefix">phone</i>
+						<input
+							id="name"
+							type="text"
+							name="phone"
+							class="validate"
+							onkeypress="return ValidateNumbers(event)"
+						/>
+						<label for="name">Passenger Name</label>
+					</div>
+					<div class="input-field col s2">
+						<i class="material-icons prefix">phone_android</i>
+						<input
+							id="nationality"
+							name="mobile"
+							type="tel"
+							class="validate"
+							onkeypress="return ValidateNumbers(event)"
+						/>
+						<label for="nationality">Nationality</label>
+					</div>
+					<div class="input-field col s2">
+						<i class="material-icons prefix">add_location</i>
+						<input
+							id="adults"
+							type="text"
+							name="city"
+							class="validate"
+							required
+						/>
+						<label for="adults">Adults </label>
+					</div>
+					<div class="input-field col s2">
+						<i class="material-icons prefix">add_location</i>
+						<input
+							id="children"
+							type="text"
+							name="city"
+							class="validate"
+							required
+						/>
+						<label for="children">Children </label>
+					</div>
+					<div class="input-field col s2">
+						<i class="material-icons prefix">add_location</i>
+						<input
+							id="infants"
+							type="text"
+							name="city"
+							class="validate"
+							required
+						/>
+						<label for="bookings">Infants </label>
+					</div>
+				</div>
+				<hr style="border-top: 1px dotted red;" />
+
+				<div class="row" style="margin-bottom: 0px !important;">
+					<div class="col s4" style="margin-bottom: 0px !important;">
+						<div class="input-field col s6">
+							<!-- <i class="material-icons prefix">phone_android</i> -->
+							<input
+								id="nationality"
+								name="mobile"
+								type="tel"
+								class="validate"
+								onkeypress="return ValidateNumbers(event)"
+							/>
+							<label for="nationality">Price : Adults </label>
+						</div>
+						<div class="input-field col s6">
+							<!-- <i class="material-icons prefix">add_location</i> -->
+							<input
+								id="adults"
+								type="text"
+								name="city"
+								class="validate"
+								required
+							/>
+							<label for="adults">Price : Children </label>
+						</div>
+
+						<div class="input-field col s6">
+							<!-- <i class="material-icons prefix">add_location</i> -->
+							<input
+								id="infants"
+								type="text"
+								name="city"
+								class="validate"
+								required
+							/>
+							<label for="bookings">Price :Infants </label>
+						</div>
+						<div class="input-field col s6">
+							<!-- <i class="material-icons prefix">phone</i> -->
+							<input
+								id="name"
+								type="text"
+								name="phone"
+								class="validate"
+								onkeypress="return ValidateNumbers(event)"
+							/>
+							<label for="name">Commi.. Rate(%)</label>
+						</div>
+						<div class="input-field col s6">
+							<!-- <i class="material-icons prefix">phone_android</i> -->
+							<input
+								id="nationality"
+								name="mobile"
+								type="tel"
+								class="validate"
+								onkeypress="return ValidateNumbers(event)"
+							/>
+							<label for="nationality">NCF</label>
+						</div>
+						<div class="input-field col s6">
+							<!-- <i class="material-icons prefix">phone</i> -->
+							<input
+								id="name"
+								type="text"
+								name="phone"
+								class="validate"
+								onkeypress="return ValidateNumbers(event)"
+							/>
+							<label for="name">TAX</label>
+						</div>
+						<div class="input-field col s6">
+							<!-- <i class="material-icons prefix">phone</i> -->
+							<input
+								id="name"
+								type="text"
+								name="phone"
+								class="validate"
+								onkeypress="return ValidateNumbers(event)"
+							/>
+							<label for="name">Gratuity</label>
+						</div>
+						<div class="input-field col s6">
+							<!-- <i class="material-icons prefix">phone</i> -->
+							<input
+								id="name"
+								type="text"
+								name="phone"
+								class="validate"
+								onkeypress="return ValidateNumbers(event)"
+							/>
+							<label for="name">Holiday Surcharge</label>
+						</div>
+						<div class="input-field col s6">
+							<!-- <i class="material-icons prefix">phone</i> -->
+							<input
+								id="name"
+								type="text"
+								name="phone"
+								class="validate"
+								onkeypress="return ValidateNumbers(event)"
+							/>
+							<label for="name">Misc..Expense</label>
+						</div>
+						<div class="input-field col s6">
+							<!-- <i class="material-icons prefix">phone</i> -->
+							<input
+								id="name"
+								type="text"
+								name="phone"
+								class="validate"
+								onkeypress="return ValidateNumbers(event)"
+							/>
+							<label for="name">TDS</label>
+						</div>
+
+						<div class="switch ">
+							<label style="color: blue;">
+								Advance/Token
+								<input id="my-switch"  type="checkbox" />
+								<span class="lever"></span>
+							</label>
+                        </div>
+                        <div class="input-field col s6">
+							<!-- <i class="material-icons prefix">phone</i> -->
+                            <input
+                            disabled
+								id="token"
+								type="text"
+								name="token"
+								class="validate"
+								onkeypress="return ValidateNumbers(event)"
+							/>
+							<label for="token">Token Amount </label>
+						</div>
+					</div>
+
+				
+					</div>
+				</div>
+
+				<div class="right-align">
+					<!-- <input type="submit" id="btnSave" class="waves-effect waves-light btn"><i class="material-icons right">cloud</i>Save & exit</a> -->
+					<!-- <input type="submit" value="Save" id="closeBtn" /> -->
+					<button
+						class="btn waves-effect waves-light"
+						type="submit"
+						id="btnSave"
+						name="action"
+					>
+						Save & Exit <i class="material-icons right">save</i>
+					</button>
+				</div>
+			</form>
+		</div>
+
+		<script>
+			if (typeof module === "object") {
+				window.module = module;
+				module = undefined;
+			}
+		</script>
+
+		<script
+			src="https://code.jquery.com/jquery-3.4.1.min.js"
+			integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+			crossorigin="anonymous"
+		></script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+		<script src="./invoice.js"></script>
+		<script>
+			var switchStatus = false;
+			$("#my-switch").on("change", function() {
+				if ($(this).is(":checked")) {
+					switchStatus = $(this).is(":checked");
+                    // alert(switchStatus); // To verify
+                    $('#token').prop('disabled', false)
+				} else {
+					switchStatus = $(this).is(":checked");
+                    //alert(switchStatus); // To verify
+                    $('#token').prop('disabled', true)
+				}
+			});
+		</script>
+
+		<script>
+			if (window.module) module = window.module;
+		</script>
+	</body>
+</html>

@@ -33,3 +33,33 @@ form.addEventListener("submit", function(event) {
 ipcRenderer.on("user:added", (event, args) => {
 	alert(args);
 });
+
+const pdf = new jsPDF();
+
+// select the button
+let button = document.querySelector("#print");
+// select the input
+let name = document.querySelector("#first_name");
+let last = document.querySelector("#last_name");
+let email = document.querySelector("#email");
+
+// add 'click' event listener for the button
+button.addEventListener("click", printPDF);
+
+// actual PDF options
+function printPDF() {
+	pdf.setProperties({
+		title: "This is my title"
+	});
+	// @param 1 - Coordinate (in units declared at inception of PDF document) against left edge of the page
+	// @param 2 - Coordinate (in units declared at inception of PDF document) against upper edge of the page
+	// @param 3 - String or array of strings to be added to the page. Each line is shifted one line down per font, spacing settings declared before this call.
+
+	pdf.text(10, 10, `your First name is  ${name.value}`);
+	pdf.text(20, 20, `your Last name is  ${last.value}`);
+	// pdf.text(10, 10, `your emil  is  ${email.value}`);
+	pdf.setDrawColor(255, 0, 0);
+	pdf.line(35, 30, 100, 30);
+	// save the PDF document (downloadable)
+	pdf.output("save", "filename.pdf");
+}

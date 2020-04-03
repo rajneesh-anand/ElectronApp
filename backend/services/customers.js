@@ -38,9 +38,9 @@ module.exports = {
 			}
 		);
 	},
-	getUserByUserId: (id, callBack) => {
+	fetchCustomerById: (id, callBack) => {
 		pool.query(
-			`select id,firstName,lastName,gender,email,number from registration where id = ?`,
+			`select * from customers where id = ?`,
 			[id],
 			(error, results, fields) => {
 				if (error) {
@@ -58,16 +58,20 @@ module.exports = {
 			return callBack(null, results);
 		});
 	},
-	updateUser: (data, callBack) => {
+	setCustomer: (data, callBack) => {
 		pool.query(
-			`update registration set firstName=?, lastName=?, gender=?, email=?, password=?, number=? where id = ?`,
+			`update customers set first_name=?, last_name=?, address_line_one=?, email=?, address_line_two=?, mobile=?, phone=?, state=?, gstin=?, city=? where id = ?`,
 			[
 				data.first_name,
 				data.last_name,
-				data.gender,
+				data.address_line_one,
 				data.email,
-				data.password,
-				data.number,
+				data.address_line_two,
+				data.mobile,
+				data.phone,
+				data.state,
+				data.gstin,
+				data.city,
 				data.id
 			],
 			(error, results, fields) => {

@@ -3,7 +3,7 @@ footer {
 }
 
 .testPad {
-	padding-left: 256px;
+	padding-left: 240px;
 	height: calc(100% - 64px) !important;
 }
 .sidenav {
@@ -11,7 +11,7 @@ footer {
 	height: calc(100% - 64px) !important;
 	margin-top: 64px;
 
-	width: 256px !important;
+	width: 240px !important;
 }
 
 .sidenav-wrapper {

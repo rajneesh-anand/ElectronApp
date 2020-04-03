@@ -4,7 +4,9 @@ const path = require("path");
 const BrowserWindow = electron.remote.BrowserWindow;
 
 let addWindow;
-let customerWindow;
+const texts = require("electron").remote.getGlobal("sharedObject").someProperty;
+
+document.getElementById("abc").value = texts;
 
 function createaddWindow() {
 	const modalPath = path.join("file://", __dirname, "user.html");
@@ -32,31 +34,31 @@ function createaddWindow() {
 	});
 }
 
-function createCustomerWindow() {
-	const modalPath = path.join("file://", __dirname, "customer.html");
+// function createCustomerWindow() {
+// 	const modalPath = path.join("file://", __dirname, "customer.html");
 
-	customerWindow = new BrowserWindow({
-		resizable: false,
-		height: 1000,
-		width: 900,
-		frame: false,
-		title: "Add Customer",
-		parent: electron.remote.getCurrentWindow(),
-		modal: true,
-		webPreferences: {
-			nodeIntegration: true
-		}
-	});
+// 	customerWindow = new BrowserWindow({
+// 		resizable: false,
+// 		height: 1000,
+// 		width: 900,
+// 		frame: false,
+// 		title: "Add Customer",
+// 		parent: electron.remote.getCurrentWindow(),
+// 		modal: true,
+// 		webPreferences: {
+// 			nodeIntegration: true
+// 		}
+// 	});
 
-	customerWindow.webContents.openDevTools();
+// 	customerWindow.webContents.openDevTools();
 
-	customerWindow.loadURL(modalPath);
-	customerWindow.show();
+// 	customerWindow.loadURL(modalPath);
+// 	customerWindow.show();
 
-	customerWindow.on("close", () => {
-		customerWindow = null;
-	});
-}
+// 	customerWindow.on("close", () => {
+// 		customerWindow = null;
+// 	});
+// }
 
 const button = document.getElementById("newUser");
 button.addEventListener("click", event => {
@@ -65,7 +67,12 @@ button.addEventListener("click", event => {
 
 const custButton = document.getElementById("newCustomer");
 custButton.addEventListener("click", event => {
-	createCustomerWindow();
+	ipcRenderer.send("create:customerwindow", "customer");
+});
+
+const invButton = document.getElementById("newInvoice");
+invButton.addEventListener("click", event => {
+	ipcRenderer.send("create:invoiceWindow", "invoice");
 });
 
 //addWindow.webContents.openDevTools();
@@ -156,11 +163,17 @@ custButton.addEventListener("click", event => {
 // 	});
 // });
 
-ipcRenderer.on("fetchUsers", (event, data) => {
+document.getElementById("newWin").addEventListener("click", () => {
+	ipcRenderer.send("create:window", "newWindow");
+});
+
+ipcRenderer.on("fetchCustomers", (event, data) => {
 	document.getElementById("getCustomers").addEventListener("click", event => {
+		let rowIndex;
 		var codeBlock = ` <table id="example" class="display responsive-table datatable-example">
         <thead>
-            <tr>
+			<tr>
+			<th>ID</th>
                 <th>Name</th>
                 <th>Position</th>
                 <th>Office</th>
@@ -174,7 +187,7 @@ ipcRenderer.on("fetchUsers", (event, data) => {
 
 		document.getElementById("table").innerHTML = codeBlock;
 
-		var table = $("#example").dataTable({
+		$("#example").dataTable({
 			paging: true,
 			sort: true,
 			searching: true,
@@ -182,10 +195,10 @@ ipcRenderer.on("fetchUsers", (event, data) => {
 				searchPlaceholder: "Search records",
 				sSearch: ""
 			},
-			// scrollY: "80vh",
 			pageLength: 100,
 			data: data,
 			columns: [
+				{ data: "id" },
 				{ data: "email" },
 				{ data: "last_name" },
 				{ data: "email" },
@@ -198,6 +211,12 @@ ipcRenderer.on("fetchUsers", (event, data) => {
 			buttons: [
 				{
 					text: "Edit selected Customer",
+					action: function(e, dt, node, config) {
+						ipcRenderer.send("customer:data", {
+							customerData: data,
+							index: rowIndex
+						});
+					},
 
 					enabled: false
 				}
@@ -223,6 +242,11 @@ ipcRenderer.on("fetchUsers", (event, data) => {
 		});
 
 		$("#example tbody").on("click", "tr", function() {
+			rowIndex = $("#example")
+				.DataTable()
+				.row(this)
+				.index();
+			console.log(rowIndex);
 			var selectedRows = $("tr.selected").length;
 			$("#example")
 				.DataTable()
@@ -274,17 +298,6 @@ ipcRenderer.on("fetchUsers", (event, data) => {
 	});
 });
 
-ipcRenderer.on("weather:data", (event, data) => {
-	console.log(data);
-
-	const temp = document.getElementById("live-temp");
-	const Mintemp = document.getElementById("temp-min");
-	const Maxtemp = document.getElementById("temp-max");
-	temp.innerHTML = data.temp;
-	Mintemp.innerHTML = data.temp_min;
-	Maxtemp.innerHTML = data.temp_max;
-});
-
 // ipcRenderer.on("flight:data", (event, data) => {
 // 	data.map((element, index) => {
 // 		console.log(element.offerItems);
@@ -306,4 +319,8 @@ ipcRenderer.on("weather:data", (event, data) => {
 // 	</div>
 // </div>`;
 // 	output.innerHTML = template;
+// });
+
+// ipcRenderer.on("sendCustomerData", (event, data) => {
+// 	console.log("Hello");
 // });

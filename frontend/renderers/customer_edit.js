@@ -24,12 +24,13 @@ function isNumberKey(evt, obj) {
 }
 
 $(document).ready(function() {
+	M.updateTextFields();
 	$("select").formSelect();
 
 	const btnClose = document.getElementById("btnClose");
 	btnClose.addEventListener("click", event => {
 		const window = remote.getCurrentWindow();
-		window.close();
+		window.hide();
 	});
 
 	const isvalid = () => {
@@ -58,7 +59,8 @@ $(document).ready(function() {
 		event.preventDefault();
 		if (isvalid) {
 			var data = new FormData(form);
-			ipcRenderer.send("add:customer", {
+			ipcRenderer.send("update:customer", {
+				id: data.get("id"),
 				first_name: data.get("first_name"),
 				last_name: data.get("last_name"),
 				address_line_one: data.get("address_line_one"),
@@ -75,6 +77,31 @@ $(document).ready(function() {
 	});
 });
 
-ipcRenderer.on("customer:added", (event, args) => {
+ipcRenderer.on("sendCustomerData", (event, data) => {
+	document.getElementById("id").value = data.id;
+	document.getElementById("first_name").value = data.first_name;
+	document.getElementById("last_name").value = data.last_name;
+	document.getElementById("address_line_one").value = data.address_line_one;
+	document.getElementById("address_line_two").value = data.address_line_two;
+	document.getElementById("city").value = data.city;
+	document.getElementById("pincode").value = data.pincode;
+	document.getElementById("mobile").value = data.mobile;
+	document.getElementById("phone").value = data.phone;
+	document.getElementById("email").value = data.email;
+	document.getElementById("gstin").value = data.gstin;
+	const selectedCategory = document.querySelector("#state");
+	const materializeSelectedCategory = M.FormSelect.init(selectedCategory);
+
+	selectedCategory.value = data.state;
+	if (typeof Event === "function") {
+		var event = new Event("change");
+	} else {
+		var event = document.createEvent("Event");
+		event.initEvent("change", true, true);
+	}
+	selectedCategory.dispatchEvent(event);
+});
+
+ipcRenderer.on("customer:updated", (event, args) => {
 	alert(args);
 });

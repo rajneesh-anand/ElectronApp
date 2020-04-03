@@ -1,6 +1,10 @@
-const { create, fetchCustomers } = require("../services/customers");
+const {
+	create,
+	fetchCustomers,
+	fetchCustomerById,
+	setCustomer
+} = require("../services/customers");
 const pool = require("../config/database");
-const formidable = require("formidable");
 
 module.exports = {
 	createCustomer: (req, res) => {
@@ -54,6 +58,44 @@ module.exports = {
 			});
 		});
 	},
+
+	getCustomerById: (req, res) => {
+		const id = req.params.id;
+		fetchCustomerById(id, (err, results) => {
+			if (err) {
+				console.log(err);
+				return;
+			}
+			if (!results) {
+				return res.json({
+					success: 0,
+					message: "Record not Found"
+				});
+			}
+
+			return res.json({
+				success: 1,
+				data: results
+			});
+		});
+	},
+
+	updateCustomer: (req, res) => {
+		const body = req.body;
+		setCustomer(body, (err, results) => {
+			if (err) {
+				console.log(err);
+				return res.status(403).json({
+					message: "Database connection error !"
+				});
+			}
+			return res.status(200).json({
+				success: 1,
+				message: "updated successfully !"
+			});
+		});
+	},
+
 	login: (req, res) => {
 		const body = req.body;
 		getUserByUserEmail(body.email, (err, results) => {
@@ -85,42 +127,7 @@ module.exports = {
 			}
 		});
 	},
-	getUserByUserId: (req, res) => {
-		const id = req.params.id;
-		getUserByUserId(id, (err, results) => {
-			if (err) {
-				console.log(err);
-				return;
-			}
-			if (!results) {
-				return res.json({
-					success: 0,
-					message: "Record not Found"
-				});
-			}
-			results.password = undefined;
-			return res.json({
-				success: 1,
-				data: results
-			});
-		});
-	},
 
-	updateUsers: (req, res) => {
-		const body = req.body;
-		const salt = genSaltSync(10);
-		body.password = hashSync(body.password, salt);
-		updateUser(body, (err, results) => {
-			if (err) {
-				console.log(err);
-				return;
-			}
-			return res.json({
-				success: 1,
-				message: "updated successfully"
-			});
-		});
-	},
 	deleteUser: (req, res) => {
 		const data = req.body;
 		deleteUser(data, (err, results) => {

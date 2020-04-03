@@ -16,10 +16,10 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	</head>
 
-	<body onkeydown="return (event.keyCode!=13)" style="width:100%">
-		
-			<div class="row" style="display: flex; padding-left: 1rem;padding-right: 1rem;">
-				<h6 class="flow-text">ADD NEW CUSTOMER</h6>
+	<body onkeydown="return (event.keyCode!=13)">
+		<div class="container">
+			<div class="row" style="display: flex">
+				<h3 class="flow-text">EDIT CUSTOMER DETAILS</h3>
 
 				<a id="btnClose" style="margin-left: auto; padding-top: 1rem;">
 					<i class="material-icons right">close</i></a
@@ -28,7 +28,7 @@
 			<div class="row" style="margin-top: 15px;">
 				<form  method="post" class="col s12">
 					<div class="row">
-						<div class="input-field col s4">
+						<div class="input-field col s6">
 							<i class="material-icons prefix">person</i>
 							<input
 								placeholder="Placeholder"
@@ -40,57 +40,50 @@
 							/>
 							<label for="first_name">First Name</label>
 						</div>
-						<div class="input-field col s4">
+						<div class="input-field col s6">
 							<i class="material-icons prefix">person</i>
-							<input
+                            <input
+                            placeholder=""
 								id="last_name"
 								type="text"
 								name="last_name"
 								class="validate"
 								required
 							/>
-							<label for="last_name">Last Name</label>
-						</div>
-						<div class="input-field col s4">
-							<i class="material-icons prefix">person</i>
-							<input
-								id="last_name"
-								type="text"
-								name="last_name"
-								class="validate"
-								required
-							/>
-							<label for="last_name">Last Name</label>
+							<label  for="last_name" >Last Name</label>
 						</div>
 					</div>
 					<div class="row">
 						<div class="input-field col s6">
 							<i class="material-icons prefix">add_location</i>
-							<input
-								id="icon_prefix"
+                            <input
+                            placeholder=""
+								id="address_line_one"
 								type="text"
 								name="address_line_one"
 								class="validate"
 								required
 							/>
-							<label for="icon_prefix">Address Line </label>
+							<label for="address_line_one">Address Line </label>
 						</div>
 						<div class="input-field col s6">
 							<i class="material-icons prefix">add_location</i>
-							<input
-								id="icon_telephone"
+                            <input
+                            placeholder=""
+								id="address_line_two"
 								name="address_line_two"
 								type="text"
 								class="validate"
 							/>
-							<label for="icon_telephone">Address Line Two</label>
+							<label for="address_line_two">Address Line Two</label>
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="input-field col s4">
 							<i class="material-icons prefix">add_location</i>
-							<input
+                            <input
+                            placeholder=""
 								id="city"
 								type="text"
 								name="city"
@@ -101,7 +94,8 @@
                         </div>
                         <div class="input-field col s4">
 							<i class="material-icons prefix">near_me</i>
-							<input
+                            <input
+                            placeholder=""
 								id="pincode"
 								name="pincode"
 								type="text"
@@ -112,7 +106,7 @@
 							<label for="pincode">Pin Code</label>
 						</div>
 						<div class="input-field col s4">
-							<select name="state">
+							<select id="state" name="state">
 								<option value="" disabled selected>Choose State</option>
 								<option value="1">Delhi</option>
 								<option value="2">Bihar</option>
@@ -125,7 +119,8 @@
                     <div class="row">
 						<div class="input-field col s6">
 							<i class="material-icons prefix">phone</i>
-							<input
+                            <input
+                            placeholder=""
 								id="phone"
 								type="text"
 								name="phone"
@@ -136,7 +131,8 @@
 						</div>
 						<div class="input-field col s6">
 							<i class="material-icons prefix">phone_android</i>
-							<input
+                            <input
+                            placeholder=""
 								id="mobile"
 								name="mobile"
 								type="tel"
@@ -150,13 +146,14 @@
 					<div class="row">
 						<div class="input-field col s6">
 							<i class="material-icons prefix">email</i>
-							<input id="email" type="email" name="email" class="validate" />
+							<input placeholder="" id="email" type="email" name="email" class="validate" />
 							<label for="email">Email</label>
 						</div>
 
 						<div class="input-field col s6">
 							<i class="material-icons prefix">edit</i>
-							<input
+                            <input
+                            placeholder=""
 								id="gstin"
 								type="text"
 								name="gstin"
@@ -175,12 +172,21 @@
 							id="btnSave"
 							name="action"
 						>
-							Save & Exit <i class="material-icons right">save</i>
+							Update & Exit <i class="material-icons right">save</i>
 						</button>
-					</div>
+                    </div>
+                    
+                    <input
+                    hidden
+                    placeholder=""
+                        id="id"
+                        type="text"
+                        name="id"
+                       
+                    />
 				</form>
 			</div>
-		
+		</div>
 
 		<script>
 			if (typeof module === "object") {
@@ -197,7 +203,7 @@
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 	
-        <script src="./customer.js"></script>
+        <script src="./customer_edit.js"></script>
      
 		<script>
 			if (window.module) module = window.module;
