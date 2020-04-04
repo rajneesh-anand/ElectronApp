@@ -91,6 +91,7 @@ const customerData = async () => {
 
 customerData().then(data => {
 	mainWindow.webContents.on("did-finish-load", event => {
+		console.log(data);
 		mainWindow.webContents.send("fetchCustomers", data);
 	});
 });
@@ -321,4 +322,10 @@ ipcMain.on("create:invoiceWindow", (event, fileName) => {
 	win.webContents.openDevTools();
 
 	win.loadURL(modalPath);
+
+	win.webContents.on("did-finish-load", event => {
+		customerData().then(data => {
+			win.webContents.send("fetchCustomers", data);
+		});
+	});
 });

@@ -18,6 +18,21 @@
 			.input-field {
 				margin-bottom: 0px !important;
 			}
+			td{
+				padding: 8px 5px;
+				text-align: right;
+				color: rgb(3, 19, 11);
+				font-weight: 600;
+				font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+				
+			
+			}
+			tr{
+				border: none;
+			}
+			table#valueInput td{
+				text-align: right;
+			}
 		</style>
 	</head>
 
@@ -26,7 +41,7 @@
 			class="row"
 			style="display: flex; padding-left: 1rem;padding-right: 1rem;"
 		>
-			<h6 class="flow-text">NEW INVOICE</h6>
+			<h6 class="flow-text" style="color: rgb(5, 26, 14);">NEW INVOICE</h6>
 
 			<a id="btnClose" style="margin-left: auto; padding-top: 1rem;">
 				<i class="material-icons right">close</i></a
@@ -42,43 +57,48 @@
 							id="invoice_no"
 							type="text"
 							class="validate"
-							name="first_name"
-							required
+							name="invoice_no"
+							disabled
 						/>
 						<label for="invoice_no">Invoice No.</label>
 					</div>
 					<div class="input-field col s2">
-						<i class="material-icons prefix">person</i>
+						<i class="material-icons prefix">date_range</i>
 						<input
 							id="invoice_date"
 							type="text"
-							name="last_name"
+							name="invoice_date"
 							class="datepicker"
 							required
 						/>
 						<label for="invoice_date">Invoice Date</label>
 					</div>
 					<div class="input-field col s2">
-						<i class="material-icons prefix">person</i>
+						<i class="material-icons prefix">date_range</i>
 						<input
 							id="departure_date"
 							type="text"
-							name="last_name"
+							name="departure_date"
 							class="datepicker"
 							required
 						/>
 						<label for="departure_date">Departure Date</label>
 					</div>
-					<div class="input-field col s6">
-						<i class="material-icons prefix">person</i>
-						<input
-							id="agent_name"
-							type="text"
-							name="last_name"
-							class="validate"
-							required
-						/>
-						<label for="agent_name">Agent Name</label>
+					<div class="col s1">
+						<label>Currency</label>
+  <select class="browser-default">
+	<option value="1">AED</option>   
+	<option value="2">EURO</option>
+	<option value="3">INR</option>
+    <option value="4">GBP</option>
+    <option value="5">USD</option>
+  </select>
+					</div>
+					<div class=" col s5">
+						<label>AGENT NAME</label>
+						<select class="browser-default agentName">		
+							<option value="" disabled selected>Select Agent</option>					
+						  </select>						
 					</div>
 				</div>
 				<div class="row" style="margin-bottom: 0px !important;">
@@ -86,7 +106,7 @@
 						<i class="material-icons prefix">add_location</i>
 						<input
 							id="ship_name"
-							name="address_line_two"
+							name="ship_name"
 							type="text"
 							class="validate"
 						/>
@@ -97,7 +117,7 @@
 						<input
 							id="cruise"
 							type="text"
-							name="city"
+							name="cruise"
 							class="validate"
 							required
 						/>
@@ -108,7 +128,7 @@
 						<input
 							id="bookings"
 							type="text"
-							name="city"
+							name="bookings"
 							class="validate"
 							required
 						/>
@@ -118,7 +138,7 @@
 						<i class="material-icons prefix">near_me</i>
 						<input
 							id="cabin"
-							name="pincode"
+							name="cabin"
 							type="text"
 							class="validate"
 							required
@@ -130,7 +150,7 @@
 						<i class="material-icons prefix">near_me</i>
 						<input
 							id="cat_bkg"
-							name="pincode"
+							name="cat_bkg"
 							type="text"
 							class="validate"
 							required
@@ -146,7 +166,7 @@
 						<input
 							id="name"
 							type="text"
-							name="phone"
+							name="name"
 							class="validate"
 							onkeypress="return ValidateNumbers(event)"
 						/>
@@ -156,7 +176,7 @@
 						<i class="material-icons prefix">phone_android</i>
 						<input
 							id="nationality"
-							name="mobile"
+							name="nationality"
 							type="tel"
 							class="validate"
 							onkeypress="return ValidateNumbers(event)"
@@ -168,9 +188,11 @@
 						<input
 							id="adults"
 							type="text"
-							name="city"
+							name="adults"
 							class="validate"
 							required
+							onkeypress="return ValidateNumbers(event)"
+							onkeyup="GetTotal(this);"
 						/>
 						<label for="adults">Adults </label>
 					</div>
@@ -179,9 +201,10 @@
 						<input
 							id="children"
 							type="text"
-							name="city"
-							class="validate"
-							required
+							name="children"
+							class="validate"							
+							onkeypress="return ValidateNumbers(event)"
+							onkeyup="GetTotal(this);"
 						/>
 						<label for="children">Children </label>
 					</div>
@@ -190,137 +213,155 @@
 						<input
 							id="infants"
 							type="text"
-							name="city"
-							class="validate"
-							required
+							name="infants"
+							class="validate"							
+							onkeypress="return ValidateNumbers(event)"
+							onkeyup="GetTotal(this);"
 						/>
-						<label for="bookings">Infants </label>
+						<label for="infants">Infants </label>
 					</div>
 				</div>
-				<hr style="border-top: 1px dotted red;" />
+				<!-- <hr style="border-top: 1px dotted red;" /> -->
 
-				<div class="row" style="margin-bottom: 0px !important;">
-					<div class="col s4" style="margin-bottom: 0px !important;">
-						<div class="input-field col s6">
-							<!-- <i class="material-icons prefix">phone_android</i> -->
+				<div class="row" style=" justify-content: space-between; margin-bottom: 0 !important;">
+					<div class="col s6" style="padding-bottom: 16px; margin-left: 32px; margin-top: 16px; border: 2px solid rgb(108, 216, 153);
+					border-radius: 5px;background-color: rgb(245, 243, 239);">
+
+
+						<div class="input-field col s4">
+							<!-- <i class="material-icons prefix">attach_money</i> -->
 							<input
-								id="nationality"
-								name="mobile"
-								type="tel"
+								id="price_adults"
+								name="price_adults"
+								type="text"
 								class="validate"
-								onkeypress="return ValidateNumbers(event)"
+								onkeypress="return isNumberKey(event,this);"
+								onkeyup="GetTotal(this);"
 							/>
-							<label for="nationality">Price : Adults </label>
+							<label for="price_adults">Price : Adults </label>
 						</div>
-						<div class="input-field col s6">
+						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">add_location</i> -->
 							<input
-								id="adults"
+								id="price_children"
 								type="text"
-								name="city"
+								name="price_children"
 								class="validate"
 								required
+								onkeypress="return isNumberKey(event,this);"
+								onkeyup="GetTotal(this);"
 							/>
-							<label for="adults">Price : Children </label>
+							<label for="price_children">Price : Children </label>
 						</div>
 
-						<div class="input-field col s6">
+						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">add_location</i> -->
 							<input
-								id="infants"
+								id="price_infants"
 								type="text"
-								name="city"
+								name="price_infants"
 								class="validate"
 								required
+								onkeypress="return isNumberKey(event,this);"
+								onkeyup="GetTotal(this);"
 							/>
-							<label for="bookings">Price :Infants </label>
+							<label for="price_infants">Price : Infants </label>
 						</div>
-						<div class="input-field col s6">
+						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone</i> -->
 							<input
-								id="name"
+								id="comm"
 								type="text"
-								name="phone"
+								name="comm"
 								class="validate"
-								onkeypress="return ValidateNumbers(event)"
+								onkeypress="return isNumberKey(event,this);"
+								onkeyup="GetTotal(this);"
 							/>
-							<label for="name">Commi.. Rate(%)</label>
+							<label for="comm">Commi.. Rate(%)</label>
 						</div>
-						<div class="input-field col s6">
+						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone_android</i> -->
 							<input
-								id="nationality"
-								name="mobile"
+								id="ncf"
+								name="ncf"
 								type="tel"
 								class="validate"
-								onkeypress="return ValidateNumbers(event)"
+								onkeypress="return isNumberKey(event,this);"
+								onkeyup="GetTotal(this);"
 							/>
-							<label for="nationality">NCF</label>
+							<label for="ncf">NCF</label>
 						</div>
-						<div class="input-field col s6">
+						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone</i> -->
 							<input
-								id="name"
+								id="tax"
 								type="text"
-								name="phone"
+								name="tax"
 								class="validate"
-								onkeypress="return ValidateNumbers(event)"
+								onkeypress="return isNumberKey(event,this);"
+								onkeyup="GetTotal(this);"
 							/>
-							<label for="name">TAX</label>
+							<label for="tax">TAX</label>
 						</div>
-						<div class="input-field col s6">
+						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone</i> -->
 							<input
-								id="name"
+								id="gratuity"
 								type="text"
-								name="phone"
+								name="gratuity"
 								class="validate"
-								onkeypress="return ValidateNumbers(event)"
+								onkeypress="return isNumberKey(event,this);"
+								onkeyup="GetTotal(this);"
 							/>
-							<label for="name">Gratuity</label>
+							<label for="gratuity">Gratuity</label>
 						</div>
-						<div class="input-field col s6">
+						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone</i> -->
 							<input
-								id="name"
+								id="holiday"
 								type="text"
-								name="phone"
+								name="holiday"
 								class="validate"
-								onkeypress="return ValidateNumbers(event)"
+								onkeypress="return isNumberKey(event,this);"
+								onkeyup="GetTotal(this);"
 							/>
-							<label for="name">Holiday Surcharge</label>
+							<label for="holiday">Holiday Surcharge</label>
 						</div>
-						<div class="input-field col s6">
+						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone</i> -->
 							<input
-								id="name"
+								id="misc"
 								type="text"
-								name="phone"
+								name="misc"
 								class="validate"
-								onkeypress="return ValidateNumbers(event)"
+								onkeypress="return isNumberKey(event,this);"
+								onkeyup="GetTotal(this);"
 							/>
-							<label for="name">Misc..Expense</label>
+							<label for="misc">Misc..Expense</label>
 						</div>
-						<div class="input-field col s6">
+						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone</i> -->
 							<input
-								id="name"
+								id="tds"
 								type="text"
-								name="phone"
+								name="tds"
 								class="validate"
-								onkeypress="return ValidateNumbers(event)"
+								onkeypress="return isNumberKey(event,this);"
+								onkeyup="GetTotal(this);"
 							/>
-							<label for="name">TDS</label>
+							<label for="tds">TDS</label>
 						</div>
-
+						<div class="input-field col s3">
 						<div class="switch ">
-							<label style="color: blue;">
-								Advance/Token
+							<label>
+								ADVANCE/TOKEN
 								<input id="my-switch"  type="checkbox" />
 								<span class="lever"></span>
 							</label>
-                        </div>
-                        <div class="input-field col s6">
+						</div>
+						</div>
+					
+                        <div class="input-field col s3">							
 							<!-- <i class="material-icons prefix">phone</i> -->
                             <input
                             disabled
@@ -328,28 +369,154 @@
 								type="text"
 								name="token"
 								class="validate"
-								onkeypress="return ValidateNumbers(event)"
+								onkeypress="return isNumberKey(event,this);"
+								onkeyup="GetTotal(this);"
 							/>
 							<label for="token">Token Amount </label>
 						</div>
+						
+                        <div class="input-field col s2">							
+							<!-- <i class="material-icons prefix">phone</i> -->
+                            <input
+                            
+								id="roe"
+								type="text"
+								name="roe"
+								class="validate"
+								onkeypress="return isNumberKey(event,this);"
+							
+							/>
+							<label for="roe">R.O.E </label>
+						</div>
+						<div class="input-field col s3">
+							<div class="switch ">
+								<label>
+									GST
+									<input id="gst-switch"  type="checkbox" />
+									<span class="lever"></span>
+								</label>
+							</div>
+							
+						</div>
+						<div class="input-field col s3">
+							<!-- <i class="material-icons prefix">phone</i> -->
+							<input
+							
+								id="cgst"
+								type="text"
+								name="cgst"
+								class="validate"
+								onkeypress="return isNumberKey(event,this);"
+									onkeyup="GetTotal(this);"
+							/>
+							<label for="cgst">CGST </label>
+						</div>
+						<div class="input-field col s3">
+							<!-- <i class="material-icons prefix">phone</i> -->
+							<input
+							
+								id="sgst"
+								type="text"
+								name="sgst"
+								class="validate"
+								onkeypress="return isNumberKey(event,this);"
+									onkeyup="GetTotal(this);"
+							/>
+							<label for="sgst">SGST </label>
+						</div>
+						<div class="input-field col s3">
+							<!-- <i class="material-icons prefix">phone</i> -->
+							<input							
+								id="igst"
+								type="text"
+								name="igst"
+								class="validate"
+								onkeypress="return isNumberKey(event,this);"
+									onkeyup="GetTotal(this);"
+							/>
+							<label for="igst">IGST </label>
+						</div>
+
+
+
+
 					</div>
 
+				<div class="col s4" style="padding-bottom: 16px; margin-left: 30px;" >
+<table >
+		<tbody>
+	  <tr >
+		<td>Base Amount</td>
+		<td>#</td>
+		<td id="base_amt"></td>
+	
+	  </tr>
+	  <tr>
+		<td>Commission Amount</td>
+		<td>#</td>
+		<td id="comm_amt"></td>
+	
+	  </tr>
+	  <tr>
+		<td>NCF Amount</td>
+		<td>#</td>
+		<td id="ncf_amt"></td>
+	
+	  </tr>
+	  <tr>
+		<td>TAX Amount</td>
+		<td>#</td>
+		<td id="tax_amt"></td>
+	
+	  </tr>
+	  <tr>
+		<td>Holiday Surcharge Amount</td>
+		<td>#</td>
+		<td id="hs_amt"></td>
+	
+	  </tr>
+	  <tr>
+		<td>Gratuity Amount</td>
+		<td>#</td>
+		<td id="gt_amt"></td>
+	
+	  </tr>
+	  <tr>
+		<td>TDS Amount</td>
+		<td>#</td>
+		<td id="tds_amt"></td>
+	
+	  </tr>
+	  <tr>
+		<td>GST Amount</td>
+		<td>#</td>
+		<td id="gst_amt"></td>
+	
+	  </tr>
+	  <tr>
+		<td>Total Payable Amount</td>
+		<td>#</td>
+		<td id="total"></td>	
+	  </tr>	 
+</tbody>
+</table>
+
+					
+					</div>				
+					</div>
+					<div class="right-align">					
+						<button
+							class="btn waves-effect waves-light"
+							type="submit"
+							id="btnSave"
+							name="action"
+						>
+							Save & Exit <i class="material-icons right">save</i>
+						</button>
+					</div>
 				
-					</div>
 				</div>
 
-				<div class="right-align">
-					<!-- <input type="submit" id="btnSave" class="waves-effect waves-light btn"><i class="material-icons right">cloud</i>Save & exit</a> -->
-					<!-- <input type="submit" value="Save" id="closeBtn" /> -->
-					<button
-						class="btn waves-effect waves-light"
-						type="submit"
-						id="btnSave"
-						name="action"
-					>
-						Save & Exit <i class="material-icons right">save</i>
-					</button>
-				</div>
 			</form>
 		</div>
 
@@ -369,6 +536,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
 		<script src="./invoice.js"></script>
+		<script src="../assets/js/calculate.js"></script>
 		<script>
 			var switchStatus = false;
 			$("#my-switch").on("change", function() {
@@ -382,7 +550,24 @@
                     $('#token').prop('disabled', true)
 				}
 			});
+			// var gstSwitchStatus = false;
+			// $("#gst-switch").on("change", function() {
+			// 	if ($(this).is(":checked")) {
+			// 		gstSwitchStatus = $(this).is(":checked");
+            //         // alert(switchStatus); // To verify
+			// 		$('#cgst').prop('disabled', false)
+			// 		$('#igst').prop('disabled', false)
+			// 		$('#sgst').prop('disabled', false)
+			// 	} else {
+			// 		gstSwitchStatus = $(this).is(":checked");
+            //         //alert(switchStatus); // To verify
+			// 		$('#cgst').prop('disabled', true)
+			// 		$('#igst').prop('disabled', true)
+			// 		$('#sgst').prop('disabled', true)
+			// 	}
+			// });
 		</script>
+	
 
 		<script>
 			if (window.module) module = window.module;
