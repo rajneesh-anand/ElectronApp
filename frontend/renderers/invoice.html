@@ -58,7 +58,7 @@
 							type="text"
 							class="validate"
 							name="invoice_no"
-							disabled
+							readonly
 						/>
 						<label for="invoice_no">Invoice No.</label>
 					</div>
@@ -86,7 +86,7 @@
 					</div>
 					<div class="col s1">
 						<label>Currency</label>
-  <select class="browser-default">
+  <select name="currency" class="browser-default">
 	<option value="1">AED</option>   
 	<option value="2">EURO</option>
 	<option value="3">INR</option>
@@ -96,7 +96,7 @@
 					</div>
 					<div class=" col s5">
 						<label>AGENT NAME</label>
-						<select class="browser-default agentName">		
+						<select name="agent" class="browser-default agentName">		
 							<option value="" disabled selected>Select Agent</option>					
 						  </select>						
 					</div>
@@ -130,7 +130,7 @@
 							type="text"
 							name="bookings"
 							class="validate"
-							required
+							
 						/>
 						<label for="bookings">Booking </label>
 					</div>
@@ -141,8 +141,8 @@
 							name="cabin"
 							type="text"
 							class="validate"
-							required
-							onkeypress="return ValidateNumbers(event)"
+						
+						
 						/>
 						<label for="cabin">Cabin</label>
 					</div>
@@ -153,8 +153,8 @@
 							name="cat_bkg"
 							type="text"
 							class="validate"
-							required
-							onkeypress="return ValidateNumbers(event)"
+							
+							
 						/>
 						<label for="cat_bkg">Cat..Bkg</label>
 					</div>
@@ -168,7 +168,7 @@
 							type="text"
 							name="name"
 							class="validate"
-							onkeypress="return ValidateNumbers(event)"
+							
 						/>
 						<label for="name">Passenger Name</label>
 					</div>
@@ -177,9 +177,10 @@
 						<input
 							id="nationality"
 							name="nationality"
-							type="tel"
+							type="text"
 							class="validate"
-							onkeypress="return ValidateNumbers(event)"
+							required
+						
 						/>
 						<label for="nationality">Nationality</label>
 					</div>
@@ -202,7 +203,8 @@
 							id="children"
 							type="text"
 							name="children"
-							class="validate"							
+							class="validate"
+														
 							onkeypress="return ValidateNumbers(event)"
 							onkeyup="GetTotal(this);"
 						/>
@@ -237,6 +239,7 @@
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
 								onkeyup="GetTotal(this);"
+								required
 							/>
 							<label for="price_adults">Price : Adults </label>
 						</div>
@@ -247,7 +250,7 @@
 								type="text"
 								name="price_children"
 								class="validate"
-								required
+							
 								onkeypress="return isNumberKey(event,this);"
 								onkeyup="GetTotal(this);"
 							/>
@@ -261,7 +264,7 @@
 								type="text"
 								name="price_infants"
 								class="validate"
-								required
+							
 								onkeypress="return isNumberKey(event,this);"
 								onkeyup="GetTotal(this);"
 							/>
@@ -535,39 +538,9 @@
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-		<script>require('./invoice.js')</script>
+		<script src="./invoice.js"></script>
 		<script src="../assets/js/calculate.js"></script>
-		<script>
-			var switchStatus = false;
-			$("#my-switch").on("change", function() {
-				if ($(this).is(":checked")) {
-					switchStatus = $(this).is(":checked");
-                    // alert(switchStatus); // To verify
-                    $('#token').prop('disabled', false)
-				} else {
-					switchStatus = $(this).is(":checked");
-                    //alert(switchStatus); // To verify
-                    $('#token').prop('disabled', true)
-				}
-			});
-			// var gstSwitchStatus = false;
-			// $("#gst-switch").on("change", function() {
-			// 	if ($(this).is(":checked")) {
-			// 		gstSwitchStatus = $(this).is(":checked");
-            //         // alert(switchStatus); // To verify
-			// 		$('#cgst').prop('disabled', false)
-			// 		$('#igst').prop('disabled', false)
-			// 		$('#sgst').prop('disabled', false)
-			// 	} else {
-			// 		gstSwitchStatus = $(this).is(":checked");
-            //         //alert(switchStatus); // To verify
-			// 		$('#cgst').prop('disabled', true)
-			// 		$('#igst').prop('disabled', true)
-			// 		$('#sgst').prop('disabled', true)
-			// 	}
-			// });
-		</script>
-	
+		
 
 		<script>
 			if (window.module) module = window.module;

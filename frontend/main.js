@@ -11,7 +11,7 @@ require("electron-reload")(__dirname);
 let mainWindow;
 let customerWindow;
 global.sharedObject = {
-	someProperty: ""
+	someProperty: "",
 };
 
 const isWindows = process.platform === "win32";
@@ -21,7 +21,7 @@ async function getWeatherData() {
 		.get(
 			`http://api.openweathermap.org/data/2.5/weather?q=delhi,IN&APPID=1e2e7f5d7c3e08e9dc1b2504463f9d59`
 		)
-		.then(response => {
+		.then((response) => {
 			console.log(response.data.main);
 
 			global.sharedObject.someProperty = `${response.data.main.temp}`;
@@ -38,15 +38,15 @@ function createWindow() {
 		width: maxiSize.width,
 		// frame: isWindows ? false : true,
 		webPreferences: {
-			nodeIntegration: true
-		}
+			nodeIntegration: true,
+		},
 	});
 
 	mainWindow.loadURL(
 		url.format({
 			pathname: path.join(__dirname, "renderers/index.html"),
 			protocol: "file:",
-			slashes: true
+			slashes: true,
 		})
 	);
 	// Open DevTools - Remove for PRODUCTION!
@@ -61,17 +61,17 @@ function createWindow() {
 const userData = async () => {
 	return await axios
 		.get(`http://localhost:3000/api/users`)
-		.then(Response => {
+		.then((Response) => {
 			// console.log(Response.data.data);
 			return Response.data.data;
 		})
-		.catch(error => {
+		.catch((error) => {
 			if (error) throw new Error(error);
 		});
 };
 
-userData().then(data => {
-	mainWindow.webContents.on("did-finish-load", event => {
+userData().then((data) => {
+	mainWindow.webContents.on("did-finish-load", (event) => {
 		mainWindow.webContents.send("fetchUsers", data);
 	});
 });
@@ -81,16 +81,16 @@ userData().then(data => {
 const customerData = async () => {
 	return await axios
 		.get(`http://localhost:3000/api/customers`)
-		.then(Response => {
+		.then((Response) => {
 			return Response.data.data;
 		})
-		.catch(error => {
+		.catch((error) => {
 			if (error) throw new Error(error);
 		});
 };
 
-customerData().then(data => {
-	mainWindow.webContents.on("did-finish-load", event => {
+customerData().then((data) => {
+	mainWindow.webContents.on("did-finish-load", (event) => {
 		console.log(data);
 		mainWindow.webContents.send("fetchCustomers", data);
 	});
@@ -108,37 +108,37 @@ var menu = Menu.buildFromTemplate([
 						url.format({
 							pathname: path.join(__dirname, "renderers/index.html"),
 							protocol: "file:",
-							slashes: true
+							slashes: true,
 						})
 					);
-				}
+				},
 			},
 
 			{
 				label: "Adjust Notification Value",
 				click() {
 					mainWindow.loadURL("https://electron.atom.io");
-				}
+				},
 			},
 			{
 				label: "CoinMarketCap",
 				click() {
 					shell.openExternal("http://coinmarketcap.com");
 				},
-				accelerator: "CmdOrCtrl+Shift+C"
+				accelerator: "CmdOrCtrl+Shift+C",
 			},
 			{ type: "separator" },
 			{
 				label: "Exit",
 				click() {
 					app.quit();
-				}
-			}
-		]
+				},
+			},
+		],
 	},
 	{
-		label: "Info"
-	}
+		label: "Info",
+	},
 ]);
 Menu.setApplicationMenu(menu);
 
@@ -155,7 +155,7 @@ app.on("activate", () => {
 	if (mainWindow === null) createWindow();
 });
 
-ipcMain.on("add:user", async function(event, args) {
+ipcMain.on("add:user", async function (event, args) {
 	await axios
 		.post(
 			`http://localhost:3000/api/signup`,
@@ -164,19 +164,19 @@ ipcMain.on("add:user", async function(event, args) {
 			{
 				headers: {
 					Accept: "application/json",
-					"Content-Type": "application/json"
-				}
+					"Content-Type": "application/json",
+				},
 			}
 		)
-		.then(Response => {
+		.then((Response) => {
 			event.reply("user:added", Response.data.message);
 		})
-		.catch(error => {
+		.catch((error) => {
 			console.log(error);
 		});
 });
 
-ipcMain.on("add:customer", async function(event, args) {
+ipcMain.on("add:customer", async function (event, args) {
 	console.log(args);
 	await axios
 		.post(
@@ -186,19 +186,19 @@ ipcMain.on("add:customer", async function(event, args) {
 			{
 				headers: {
 					Accept: "application/json",
-					"Content-Type": "application/json"
-				}
+					"Content-Type": "application/json",
+				},
 			}
 		)
-		.then(Response => {
+		.then((Response) => {
 			event.reply("customer:added", Response.data.message);
 		})
-		.catch(error => {
+		.catch((error) => {
 			event.reply("customer:added", error.response.data.message);
 		});
 });
 
-ipcMain.on("update:customer", async function(event, args) {
+ipcMain.on("update:customer", async function (event, args) {
 	console.log(args);
 	await axios
 		.put(
@@ -208,19 +208,19 @@ ipcMain.on("update:customer", async function(event, args) {
 			{
 				headers: {
 					Accept: "application/json",
-					"Content-Type": "application/json"
-				}
+					"Content-Type": "application/json",
+				},
 			}
 		)
-		.then(Response => {
+		.then((Response) => {
 			event.reply("customer:updated", Response.data.message);
 		})
-		.catch(error => {
+		.catch((error) => {
 			event.reply("customer:updated", error.response.data.message);
 		});
 });
 
-ipcMain.on("customer:data", function(event, args) {
+ipcMain.on("customer:data", function (event, args) {
 	const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 	const modalPath = path.join(
 		`file://${__dirname}/renderers/customer_edit.html`
@@ -238,8 +238,8 @@ ipcMain.on("customer:data", function(event, args) {
 		show: false,
 		modal: true,
 		webPreferences: {
-			nodeIntegration: true
-		}
+			nodeIntegration: true,
+		},
 	});
 
 	// customerWindow.webContents.openDevTools();
@@ -290,8 +290,8 @@ ipcMain.on("create:customerwindow", (event, fileName) => {
 		parent: mainWindow,
 		modal: true,
 		webPreferences: {
-			nodeIntegration: true
-		}
+			nodeIntegration: true,
+		},
 	});
 
 	win.webContents.openDevTools();
@@ -315,17 +315,43 @@ ipcMain.on("create:invoiceWindow", (event, fileName) => {
 		parent: mainWindow,
 		modal: true,
 		webPreferences: {
-			nodeIntegration: true
-		}
+			nodeIntegration: true,
+		},
 	});
 
 	win.webContents.openDevTools();
 
 	win.loadURL(modalPath);
 
-	win.webContents.on("did-finish-load", event => {
-		customerData().then(data => {
+	win.webContents.on("did-finish-load", (event) => {
+		customerData().then((data) => {
 			win.webContents.send("fetchCustomers", data);
 		});
 	});
 });
+
+//------- Invoice Section ---------
+
+ipcMain.on("add:invoice", async function (event, args) {
+	console.log(args);
+	await axios
+		.post(
+			`http://localhost:3000/api/invoice`,
+			args,
+
+			{
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			}
+		)
+		.then((Response) => {
+			event.reply("invoice:added", Response.data.message);
+		})
+		.catch((error) => {
+			event.reply("invoice:added", error.response.data.message);
+		});
+});
+
+//------- Invoice Section Ends -----

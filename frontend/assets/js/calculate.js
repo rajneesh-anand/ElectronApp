@@ -1,23 +1,23 @@
-function ValidateNumbers(e) {
-	document.oncontextmenu = function () {
-		return false;
-	};
-	var key = document.all ? e.keyCode : e.which;
-	if (key == 8) return true;
-	patron = /\d/;
-	te = String.fromCharCode(key);
-	return patron.test(te);
-}
+// function ValidateNumbers(e) {
+// 	document.oncontextmenu = function () {
+// 		return false;
+// 	};
+// 	var key = document.all ? e.keyCode : e.which;
+// 	if (key == 8) return true;
+// 	patron = /\d/;
+// 	te = String.fromCharCode(key);
+// 	return patron.test(te);
+// }
 
-function isNumberKey(evt, obj) {
-	var charCode = evt.which ? evt.which : event.keyCode;
-	var value = obj.value;
-	var dotcontains = value.indexOf(".") != -1;
-	if (dotcontains) if (charCode == 46) return false;
-	if (charCode == 46) return true;
-	if (charCode > 31 && (charCode < 48 || charCode > 57)) return false;
-	return true;
-}
+// function isNumberKey(evt, obj) {
+// 	var charCode = evt.which ? evt.which : event.keyCode;
+// 	var value = obj.value;
+// 	var dotcontains = value.indexOf(".") != -1;
+// 	if (dotcontains) if (charCode == 46) return false;
+// 	if (charCode == 46) return true;
+// 	if (charCode > 31 && (charCode < 48 || charCode > 57)) return false;
+// 	return true;
+// }
 
 // function GetTotal(obj) {
 // 	var val1 =

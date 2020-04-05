@@ -9,8 +9,9 @@ const pool = require("../config/database");
 module.exports = {
 	createInvoice: (req, res) => {
 		const body = req.body;
+		console.log(body);
 		const reg = {
-			Invoice_Number: body.invoice_number,
+			Invoice_Number: body.Invoice_Number,
 		};
 
 		pool.query(
