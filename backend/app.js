@@ -12,9 +12,11 @@ app.use(expValidator());
 
 const customerRouter = require("./routes/customer");
 const userRouter = require("./routes/users");
+const invoiceRouter = require("./routes/invoice");
 
 app.use("/api", customerRouter);
 app.use("/api", userRouter);
+app.use("/api", invoiceRouter);
 
 const port = process.env.PORT || 3000;
 
