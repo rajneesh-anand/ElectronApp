@@ -1,6 +1,7 @@
 const electron = require("electron");
 const remote = electron.remote;
 const { ipcRenderer } = electron;
+const path = require("path");
 
 var val1,
 	val2,
@@ -31,9 +32,14 @@ var val1,
 	misc_amount,
 	token_amount,
 	tds_amount,
+	cgst_amount,
+	sgst_amount,
+	igst_amount,
 	total_gst,
 	gross_amount,
 	gross_amount_inr;
+
+var customers = [];
 
 function ValidateNumbers(e) {
 	document.oncontextmenu = function () {
@@ -160,9 +166,9 @@ function GetTotal(obj) {
 		parseFloat(misc_amount) +
 		parseFloat(tds_amount);
 
-	var cgst_amount = (net_amount * parseFloat(val15)) / 100;
-	var igst_amount = (net_amount * parseFloat(val16)) / 100;
-	var sgst_amount = (net_amount * parseFloat(val17)) / 100;
+	cgst_amount = (net_amount * parseFloat(val15)) / 100;
+	igst_amount = (net_amount * parseFloat(val16)) / 100;
+	sgst_amount = (net_amount * parseFloat(val17)) / 100;
 	total_gst =
 		parseFloat(cgst_amount) + parseFloat(igst_amount) + parseFloat(sgst_amount);
 
@@ -179,7 +185,7 @@ function GetTotal(obj) {
 	}
 
 	document.getElementById("base_amt").innerHTML = parseFloat(total).toFixed(2);
-	console.log(total);
+
 	document.getElementById("comm_amt").innerHTML = parseFloat(
 		comm_amount
 	).toFixed(2);
@@ -212,8 +218,6 @@ function GetTotal(obj) {
 }
 
 $(document).ready(function () {
-	generateInvoice();
-
 	const btnClose = document.getElementById("btnClose");
 	btnClose.addEventListener("click", (event) => {
 		const window = remote.getCurrentWindow();
@@ -227,6 +231,16 @@ $(document).ready(function () {
 		setDefaultDate: true,
 	});
 
+	//convert date format for database
+	function formattedDate(dateValue) {
+		const event = new Date(dateValue);
+		const year = event.getFullYear();
+		const month = event.getMonth() + 1;
+		const getdate = event.getDate();
+		return `${year}-${month}-${getdate}`;
+	}
+	//
+
 	// Send Form Data to Server
 
 	const isvalid = () => {
@@ -235,13 +249,15 @@ $(document).ready(function () {
 		let price_adults = document.getElementById("price_adults").value;
 		let ship = document.getElementById("ship_name").value;
 		let cruise = document.getElementById("cruise").value;
+		let agent = document.querySelector(".agentName").value;
 
 		if (
 			name === "" ||
 			adults === "" ||
 			price_adults === "" ||
 			ship === "" ||
-			cruise === ""
+			cruise === "" ||
+			agent === ""
 		) {
 			return false;
 		} else {
@@ -249,23 +265,16 @@ $(document).ready(function () {
 		}
 	};
 
-	let form = document.querySelector("form");
+	var form = document.querySelector("form");
 
 	form.addEventListener("submit", function (event) {
-		console.log("object");
 		event.preventDefault();
-		if (isvalid) {
+		if (isvalid()) {
 			var data = new FormData(form);
 			ipcRenderer.send("add:invoice", {
 				Invoice_Number: data.get("invoice_no"),
-				Invoice_Date: new Date(data.get("invoice_date"))
-					.toISOString()
-					.slice(0, 10)
-					.replace("T", " "),
-				Departure_Date: new Date(data.get("departure_date"))
-					.toISOString()
-					.slice(0, 10)
-					.replace("T", " "),
+				Invoice_Date: formattedDate(data.get("invoice_date")),
+				Departure_Date: formattedDate(data.get("departure_date")),
 				Agent_Name: data.get("agent"),
 				Cruise_Ship: data.get("ship_name"),
 				Cruise: data.get("cruise"),
@@ -275,12 +284,12 @@ $(document).ready(function () {
 				Cat_Bkg: data.get("cat_bkg"),
 				Pass_Name: data.get("name"),
 				Nationality: data.get("nationality"),
-				Adults: data.get("adults"),
-				Children: data.get("children"),
-				Infants: data.get("infants"),
-				Adults_Rate: data.get("price_adults"),
-				Children_Rate: data.get("price_children"),
-				Infants_Rate: data.get("price_infants"),
+				Adults: val1,
+				Children: val2,
+				Infants: val3,
+				Adults_Rate: val4,
+				Children_Rate: val5,
+				Infants_Rate: val6,
 				Comm_Rate: val7,
 				Comm_Amt: comm_amount.toFixed(2),
 				NCF: val8,
@@ -304,10 +313,7 @@ $(document).ready(function () {
 				Token: switchStatus,
 				GST: gstSwitchStatus,
 				PAX: total_passenger,
-				EntryDate: new Date(data.get("invoice_date"))
-					.toISOString()
-					.slice(0, 10)
-					.replace("T", " "),
+				EntryDate: formattedDate(data.get("invoice_date")),
 				Credit_Account: "CARROT CRUISE",
 				Credit_Amount: gross_amount_inr.toFixed(2),
 				Debit_Account: data.get("agent"),
@@ -320,7 +326,8 @@ $(document).ready(function () {
 });
 
 ipcRenderer.on("fetchCustomers", (event, data) => {
-	console.log(data);
+	customers = [...data];
+	console.log(customers);
 	var Options = "";
 	data.map(function (element, i) {
 		Options =
@@ -331,14 +338,22 @@ ipcRenderer.on("fetchCustomers", (event, data) => {
 	$(".agentName").formSelect();
 });
 
-function generateInvoice() {
-	var abc = "00123";
-	var s = Number(abc) + 1;
-	var zerofilled = ("00000" + s).slice(-5);
-	var inv = `CC${new Date().getFullYear()}${new Date().getMonth()}-${zerofilled}`;
-	console.log(inv);
-	document.getElementById("invoice_no").value = inv;
-}
+ipcRenderer.on("sendInvoiceNumber", (event, args) => {
+	let extractInvoice = args[0];
+	//console.log(extractInvoice["@Invoice_Number"]);
+	document.getElementById("invoice_no").value =
+		extractInvoice["@Invoice_Number"];
+});
+
+// function generateInvoice(invoiceNumber) {
+// 	var generatedInvoice;
+// 	var x = invoiceNumber.slice(-5);
+// 	var s = Number(x) + 1;
+// 	var zerofilled = ("00000" + s).slice(-5);
+// 	 = `CC${new Date().getFullYear()}${new Date().getMonth()}-${zerofilled}`;
+// 	console.log(generatedInvoice);
+// 	document.getElementById("invoice_no").value = generatedInvoice;
+// }
 
 var switchStatus = false;
 $("#my-switch").on("change", function () {
@@ -372,3 +387,155 @@ $("#gst-switch").on("change", function () {
 ipcRenderer.on("invoice:added", (event, args) => {
 	alert(args);
 });
+
+//--- Invoice PDF Generation ---
+
+document.getElementById("download").addEventListener("click", () => {
+	generate();
+});
+function loadFile(url, callback) {
+	PizZipUtils.getBinaryContent(url, callback);
+}
+function generate() {
+	loadFile(
+		path.join(`file://${__dirname}`, "..", "/assets/example.docx"),
+		function (error, content) {
+			if (error) {
+				throw error;
+			}
+
+			// The error object contains additional information when logged with JSON.stringify (it contains a properties object containing all suberrors).
+			function replaceErrors(key, value) {
+				if (value instanceof Error) {
+					return Object.getOwnPropertyNames(value).reduce(function (
+						error,
+						key
+					) {
+						error[key] = value[key];
+						return error;
+					},
+					{});
+				}
+				return value;
+			}
+
+			function errorHandler(error) {
+				console.log(JSON.stringify({ error: error }, replaceErrors));
+
+				if (error.properties && error.properties.errors instanceof Array) {
+					const errorMessages = error.properties.errors
+						.map(function (error) {
+							return error.properties.explanation;
+						})
+						.join("\n");
+					console.log("errorMessages", errorMessages);
+					// errorMessages is a humanly readable message looking like this :
+					// 'The tag beginning with "foobar" is unopened'
+				}
+				throw error;
+			}
+
+			var zip = new PizZip(content);
+			var doc;
+			try {
+				doc = new window.docxtemplater(zip);
+			} catch (error) {
+				// Catch compilation errors (errors caused by the compilation of the template : misplaced tags)
+				errorHandler(error);
+			}
+			const agentDetails =
+				customers[document.querySelector(".agentName").value - 1];
+
+			doc.setData({
+				invoice: document.getElementById("invoice_no").value,
+				date: document.getElementById("invoice_date").value,
+				agent: agentDetails.first_name,
+				address: agentDetails.address_line_one,
+				city: agentDetails.city,
+				state: agentDetails.state_name,
+				pin: agentDetails.pincode,
+				passname:
+					document.getElementById("name").value === ""
+						? ""
+						: document.getElementById("name").value,
+				cabin:
+					document.getElementById("cabin").value === ""
+						? ""
+						: document.getElementById("cabin").value,
+				suite:
+					document.getElementById("cat_bkg").value === ""
+						? ""
+						: document.getElementById("cat_bkg").value,
+				ship:
+					document.getElementById("ship_name").value === ""
+						? ""
+						: document.getElementById("ship_name").value,
+				saledate:
+					document.getElementById("departure_date").value === ""
+						? ""
+						: document.getElementById("departure_date").value,
+				totalpass: total_passenger,
+				gstin: agentDetails.gstin,
+				base_fare: total.toFixed(2),
+				com: comm_amount.toFixed(2),
+				com_rate: val7,
+				tds: tds_amount.toFixed(2),
+				tds_rate:
+					document.getElementById("tds").value === ""
+						? ""
+						: document.getElementById("tds").value,
+				ncf: ncf_amount.toFixed(2),
+				tax: tax_amount.toFixed(2),
+				hs: hs_amount.toFixed(2),
+				gratuity: gratuity_amount.toFixed(2),
+				misc: misc_amount.toFixed(2),
+				gst: parseFloat(val15) + parseFloat(val16) + parseFloat(val17),
+				cgst: document.getElementById("cgst").value === "" ? "" : "CGST",
+				sgst: document.getElementById("sgst").value === "" ? "" : "SGST",
+				cgst_rate:
+					document.getElementById("cgst").value === ""
+						? ""
+						: document.getElementById("cgst").value,
+				sgst_rate:
+					document.getElementById("sgst").value === ""
+						? ""
+						: document.getElementById("sgst").value,
+				cgst_amt: cgst_amount === 0 ? "" : cgst_amount.toFixed(2),
+				sgst_amt: sgst_amount === 0 ? "" : sgst_amount.toFixed(2),
+				totalgst: total_gst.toFixed(2),
+				token: token_amount,
+				roe:
+					document.getElementById("roe").value === ""
+						? ""
+						: document.getElementById("roe").value,
+				total_pay: gross_amount.toFixed(2),
+				total_pay_inr: gross_amount_inr.toFixed(2),
+			});
+			try {
+				// render the document (replace all occurences of {first_name} by John, {last_name} by Doe, ...)
+				doc.render();
+			} catch (error) {
+				// Catch rendering errors (errors relating to the rendering of the template : angularParser throws an error)
+				errorHandler(error);
+			}
+
+			var out = doc.getZip().generate({
+				type: "blob",
+				mimeType:
+					"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+			}); //Output the document using Data-URI
+			saveAs(out, "Invoice.pdf");
+		}
+	);
+}
+
+var docxConverter = require("docx-pdf");
+
+docxConverter("./input.docx", "./output.pdf", function (err, result) {
+	if (err) {
+		console.log(err);
+	}
+	console.log("result" + result);
+});
+
+//----------------- END ------

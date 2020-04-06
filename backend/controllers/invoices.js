@@ -7,6 +7,18 @@ const {
 const pool = require("../config/database");
 
 module.exports = {
+	getInvoiceNumber: (req, res) => {
+		pool.query(`call GenerateInvoice()`, [], (err, data) => {
+			if (err) {
+				return res.status(403).json({
+					error: err,
+				});
+			}
+			return res.status(200).json({
+				data: data[0],
+			});
+		});
+	},
 	createInvoice: (req, res) => {
 		const body = req.body;
 		console.log(body);

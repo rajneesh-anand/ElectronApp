@@ -96,6 +96,19 @@ customerData().then((data) => {
 	});
 });
 
+// Fetch Invoice Number
+
+const getInvoiceNumber = async () => {
+	return await axios
+		.get(`http://localhost:3000/api/getinvoice`)
+		.then((Response) => {
+			return Response.data.data;
+		})
+		.catch((error) => {
+			if (error) throw new Error(error);
+		});
+};
+
 // Custom Menu - Menu Items
 var menu = Menu.buildFromTemplate([
 	{
@@ -327,13 +340,15 @@ ipcMain.on("create:invoiceWindow", (event, fileName) => {
 		customerData().then((data) => {
 			win.webContents.send("fetchCustomers", data);
 		});
+		getInvoiceNumber().then((inv) => {
+			win.webContents.send("sendInvoiceNumber", inv);
+		});
 	});
 });
 
 //------- Invoice Section ---------
 
 ipcMain.on("add:invoice", async function (event, args) {
-	console.log(args);
 	await axios
 		.post(
 			`http://localhost:3000/api/invoice`,

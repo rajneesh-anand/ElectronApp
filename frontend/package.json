@@ -15,11 +15,14 @@
     "electron-reload": "^1.5.0"
   },
   "dependencies": {
+    "@nativedocuments/docx-wasm": "^2.2.13-1561490777",
     "axios": "^0.19.2",
+    "docxtemplater": "^3.17.5",
     "electron-window-state": "^5.0.3",
     "jquery": "^3.4.1",
     "jwt-decode": "^2.2.0",
     "keytar": "^5.4.0",
+    "pizzip": "^3.0.6",
     "request": "^2.88.0"
   }
 }

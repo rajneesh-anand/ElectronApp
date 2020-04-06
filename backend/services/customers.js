@@ -16,7 +16,7 @@ module.exports = {
 				data.mobile,
 				data.phone,
 				data.gstin,
-				data.email
+				data.email,
 			],
 			(error, results, fields) => {
 				if (error) {
@@ -50,13 +50,17 @@ module.exports = {
 			}
 		);
 	},
-	fetchCustomers: callBack => {
-		pool.query(`SELECT * FROM customers`, [], (error, results, fields) => {
-			if (error) {
-				callBack(error);
+	fetchCustomers: (callBack) => {
+		pool.query(
+			`SELECT c.id,c.first_name,c.last_name,c.address_line_one,c.address_line_two,c.city,c.pincode,c.gstin,s.state_name FROM customers c, states s where c.state =s.id`,
+			[],
+			(error, results, fields) => {
+				if (error) {
+					callBack(error);
+				}
+				return callBack(null, results);
 			}
-			return callBack(null, results);
-		});
+		);
 	},
 	setCustomer: (data, callBack) => {
 		pool.query(
@@ -72,7 +76,7 @@ module.exports = {
 				data.state,
 				data.gstin,
 				data.city,
-				data.id
+				data.id,
 			],
 			(error, results, fields) => {
 				if (error) {
@@ -93,5 +97,5 @@ module.exports = {
 				return callBack(null, results[0]);
 			}
 		);
-	}
+	},
 };

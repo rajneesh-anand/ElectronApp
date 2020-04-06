@@ -1,8 +1,10 @@
 const router = require("express").Router();
 const { checkToken } = require("../auth/jwt_validation");
-const { createInvoice } = require("../controllers/invoices");
+const { createInvoice, getInvoiceNumber } = require("../controllers/invoices");
 // router.get("/invoices", getInvoices);
 router.post("/invoice", createInvoice);
+router.get("/getinvoice", getInvoiceNumber);
+
 // router.get("/invoice/:id", getInvoiceById);
 // router.put("/invoice", updateInvoice);
 
