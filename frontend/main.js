@@ -369,4 +369,28 @@ ipcMain.on("add:invoice", async function (event, args) {
 		});
 });
 
+// function getPDF(formdata) {
+// 	return axios.get(`http://localhost:3000/api/generatepdf`, {
+// 		data: formdata,
+// 		responseType: "arraybuffer",
+// 		headers: {
+// 			Accept: "application/pdf",
+// 		},
+// 	});
+// }
 //------- Invoice Section Ends -----
+// ipcMain.on("getInvoice", (event, args) => {
+// 	console.log(args);
+// 	getPDF(args)
+// 		.then((response) => {
+// 			console.log(response.data);
+// 			const blob = new Blob([response.data], { type: "application/pdf" });
+// 			const link = document.createElement("a");
+// 			link.href = window.URL.createObjectURL(blob);
+// 			link.download = `your-file-name.pdf`;
+// 			link.click();
+// 		})
+// 		.catch((err) => {
+// 			console.log(err);
+// 		});
+// });

@@ -19,10 +19,15 @@
     "axios": "^0.19.2",
     "docxtemplater": "^3.17.5",
     "electron-window-state": "^5.0.3",
+    "handlebars": "^4.7.6",
+    "html2canvas": "^1.0.0-rc.5",
     "jquery": "^3.4.1",
+    "jspdf": "^1.5.3",
+    "jspdf-autotable": "^3.3.2",
     "jwt-decode": "^2.2.0",
     "keytar": "^5.4.0",
     "pizzip": "^3.0.6",
+    "puppeteer": "^2.1.1",
     "request": "^2.88.0"
   }
 }

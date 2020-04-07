@@ -33,6 +33,9 @@
 			table#valueInput td{
 				text-align: right;
 			}
+			.print-wrap {
+        width: 500px;
+    }
 		</style>
 	</head>
 
@@ -387,6 +390,7 @@
 								name="roe"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
+									onkeyup="GetTotal(this);"
 							
 							/>
 							<label for="roe">R.O.E </label>
@@ -524,6 +528,9 @@
 			<button id="download">Download</button>
 		</div>
 
+	<table id="invoice" style="display: none;"></table>
+		
+
 		<script>
 			if (typeof module === "object") {
 				window.module = module;
@@ -538,14 +545,13 @@
 		></script>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-	
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.17.5/docxtemplater.js"></script>
-		<script src="https://unpkg.com/pizzip@3.0.6/dist/pizzip.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
-		<script src="https://unpkg.com/pizzip@3.0.6/dist/pizzip-utils.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+	<script src="https://unpkg.com/jspdf-autotable"></script>
 		<script src="./invoice.js"></script>
-		<!-- <script src="../assets/js/generateInvoice.js"></script>
-		 -->
+		<!-- <script src="./pdf-generator.js"></script> -->
+	
 
 		<script>
 			if (window.module) module = window.module;
