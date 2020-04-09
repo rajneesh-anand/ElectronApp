@@ -13,12 +13,14 @@ app.use(expValidator());
 const customerRouter = require("./routes/customer");
 const userRouter = require("./routes/users");
 const invoiceRouter = require("./routes/invoice");
-const pdfRouter = require("./routes/getpdf");
+
+const accountRouter = require("./routes/accounts");
 
 app.use("/api", customerRouter);
 app.use("/api", userRouter);
 app.use("/api", invoiceRouter);
-app.use("/api", pdfRouter);
+
+app.use("/api", accountRouter);
 
 const port = process.env.PORT || 3000;
 

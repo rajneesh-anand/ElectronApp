@@ -1,6 +1,7 @@
 const electron = require("electron");
 const remote = electron.remote;
 const { ipcRenderer } = electron;
+const axios = require("axios");
 
 var val1,
 	val2,
@@ -247,104 +248,115 @@ $(document).ready(function () {
 		format: "dd mmm yyyy",
 		setDefaultDate: true,
 	});
+});
 
-	//convert date format for database
-	function formattedDate(dateValue) {
-		const event = new Date(dateValue);
-		const year = event.getFullYear();
-		const month = event.getMonth() + 1;
-		const getdate = event.getDate();
-		return `${year}-${month}-${getdate}`;
+function formattedDate(dateValue) {
+	const event = new Date(dateValue);
+	const year = event.getFullYear();
+	const month = event.getMonth() + 1;
+	const getdate = event.getDate();
+	return `${year}-${month}-${getdate}`;
+}
+
+// Send Form Data to Server
+
+const isvalid = () => {
+	let name = document.getElementById("name").value;
+	let adults = document.getElementById("adults").value;
+	let price_adults = document.getElementById("price_adults").value;
+	let ship = document.getElementById("ship_name").value;
+	let cruise = document.getElementById("cruise").value;
+	let agent = document.querySelector(".agentName").value;
+
+	if (
+		name === "" ||
+		adults === "" ||
+		price_adults === "" ||
+		ship === "" ||
+		cruise === "" ||
+		agent === ""
+	) {
+		return false;
+	} else {
+		return true;
 	}
-	//
+};
 
-	// Send Form Data to Server
+var form = document.querySelector("form");
 
-	const isvalid = () => {
-		let name = document.getElementById("name").value;
-		let adults = document.getElementById("adults").value;
-		let price_adults = document.getElementById("price_adults").value;
-		let ship = document.getElementById("ship_name").value;
-		let cruise = document.getElementById("cruise").value;
-		let agent = document.querySelector(".agentName").value;
+form.addEventListener("submit", function (event) {
+	event.preventDefault();
+	if (isvalid()) {
+		let data = new FormData(form);
+		let invoiceData = {
+			Invoice_Number: data.get("invoice_no"),
+			Invoice_Date: formattedDate(data.get("invoice_date")),
+			Departure_Date: formattedDate(data.get("departure_date")),
+			Agent_Name: data.get("agent"),
+			Cruise_Ship: data.get("ship_name"),
+			Cruise: data.get("cruise"),
+			Currency: data.get("currency"),
+			Booking: data.get("bookings"),
+			Cabin: data.get("cabin"),
+			Cat_Bkg: data.get("cat_bkg"),
+			Pass_Name: data.get("name"),
+			Nationality: data.get("nationality"),
+			Adults: val1,
+			Children: val2,
+			Infants: val3,
+			Adults_Rate: val4,
+			Children_Rate: val5,
+			Infants_Rate: val6,
+			Comm_Rate: val7,
+			Comm_Amt: comm_amount,
+			NCF: val8,
+			NCF_Amt: ncf_amount,
+			TAX: val9,
+			TAX_Amt: tax_amount,
+			HS: val10,
+			HS_Amt: hs_amount,
+			Misc: misc_amount,
+			TDS: val13,
+			TDS_Amt: tds_amount,
+			Token_Amt: token_amount,
+			CGST: val15,
+			IGST: val16,
+			SGST: val17,
+			GST_Amt: total_gst,
+			ROE: val18,
+			Base_Amt: total,
+			Total_Payable_Amt: gross_amount,
+			Total_Payable_Amt_INR: gross_amount_inr,
+			Token: switchStatus,
+			GST: gstSwitchStatus,
+			PAX: total_passenger,
+			EntryDate: formattedDate(data.get("invoice_date")),
+			Credit_Account: 1,
+			Credit_Amount: gross_amount_inr,
+			Debit_Account: data.get("agent"),
+			Debit_Amount: gross_amount_inr,
+			EntryType: "Invoice-Entry",
+			InvoiceNumber: data.get("invoice_no"),
+		};
 
-		if (
-			name === "" ||
-			adults === "" ||
-			price_adults === "" ||
-			ship === "" ||
-			cruise === "" ||
-			agent === ""
-		) {
-			return false;
-		} else {
-			return true;
-		}
-	};
-
-	var form = document.querySelector("form");
-
-	form.addEventListener("submit", function (event) {
-		event.preventDefault();
-		if (isvalid()) {
-			var data = new FormData(form);
-			ipcRenderer.send("add:invoice", {
-				Invoice_Number: data.get("invoice_no"),
-				Invoice_Date: formattedDate(data.get("invoice_date")),
-				Departure_Date: formattedDate(data.get("departure_date")),
-				Agent_Name: data.get("agent"),
-				Cruise_Ship: data.get("ship_name"),
-				Cruise: data.get("cruise"),
-				Currency: data.get("currency"),
-				Booking: data.get("bookings"),
-				Cabin: data.get("cabin"),
-				Cat_Bkg: data.get("cat_bkg"),
-				Pass_Name: data.get("name"),
-				Nationality: data.get("nationality"),
-				Adults: val1,
-				Children: val2,
-				Infants: val3,
-				Adults_Rate: val4,
-				Children_Rate: val5,
-				Infants_Rate: val6,
-				Comm_Rate: val7,
-				Comm_Amt: comm_amount.toFixed(2),
-				NCF: val8,
-				NCF_Amt: ncf_amount.toFixed(2),
-				TAX: val9,
-				TAX_Amt: tax_amount.toFixed(2),
-				HS: val10,
-				HS_Amt: hs_amount.toFixed(2),
-				Misc: misc_amount,
-				TDS: val13,
-				TDS_Amt: tds_amount.toFixed(2),
-				Token_Amt: token_amount.toFixed(2),
-				CGST: val15,
-				IGST: val16,
-				SGST: val17,
-				GST_Amt: total_gst.toFixed(2),
-				ROE: val18,
-				Base_Amt: total,
-				Total_Payable_Amt: gross_amount.toFixed(2),
-				Total_Payable_Amt_INR: gross_amount_inr.toFixed(2),
-				Token: switchStatus,
-				GST: gstSwitchStatus,
-				PAX: total_passenger,
-				EntryDate: formattedDate(data.get("invoice_date")),
-				Credit_Account: "CARROT CRUISE",
-				Credit_Amount: gross_amount_inr.toFixed(2),
-				Debit_Account: data.get("agent"),
-				Debit_Amount: gross_amount_inr.toFixed(2),
-				EntryType: "Invoice-Entry",
-				InvoiceNumber: data.get("invoice_no"),
+		axios
+			.post(`http://localhost:3000/api/invoice`, invoiceData, {
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			})
+			.then((response) => {
+				alert(response.data.message);
+			})
+			.catch((error) => {
+				alert(error.response.data.message);
 			});
-		}
-	});
+	}
 });
 
 ipcRenderer.on("fetchCustomers", (event, data) => {
 	customers = [...data];
-	console.log(customers);
 	var Options = "";
 	data.map(function (element, i) {
 		Options =
@@ -357,20 +369,9 @@ ipcRenderer.on("fetchCustomers", (event, data) => {
 
 ipcRenderer.on("sendInvoiceNumber", (event, args) => {
 	let extractInvoice = args[0];
-	//console.log(extractInvoice["@Invoice_Number"]);
 	document.getElementById("invoice_no").value =
 		extractInvoice["@Invoice_Number"];
 });
-
-// function generateInvoice(invoiceNumber) {
-// 	var generatedInvoice;
-// 	var x = invoiceNumber.slice(-5);
-// 	var s = Number(x) + 1;
-// 	var zerofilled = ("00000" + s).slice(-5);
-// 	 = `CC${new Date().getFullYear()}${new Date().getMonth()}-${zerofilled}`;
-// 	console.log(generatedInvoice);
-// 	document.getElementById("invoice_no").value = generatedInvoice;
-// }
 
 var switchStatus = false;
 $("#my-switch").on("change", function () {
@@ -406,10 +407,6 @@ ipcRenderer.on("invoice:added", (event, args) => {
 });
 
 //--- Invoice PDF Generation ---
-
-// document.getElementById("download").addEventListener("click", () => {
-// 	generate();
-// });
 
 var comapnyJSON = {
 	CompanyName: "CARROT CRUISE SHIPPING PVT.LTD",

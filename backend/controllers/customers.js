@@ -2,7 +2,7 @@ const {
 	create,
 	fetchCustomers,
 	fetchCustomerById,
-	setCustomer
+	setCustomer,
 } = require("../services/customers");
 const pool = require("../config/database");
 
@@ -12,7 +12,7 @@ module.exports = {
 
 		const reg = {
 			first_name: body.first_name,
-			email: body.email
+			email: body.email,
 		};
 
 		pool.query(
@@ -21,12 +21,12 @@ module.exports = {
 			(err, data) => {
 				if (err) {
 					return res.status(403).json({
-						error: err
+						error: err,
 					});
 				}
 				if (data[0].cnt > 0) {
 					return res.status(403).json({
-						message: "Customer already exists !"
+						message: "Customer already exists !",
 					});
 				}
 
@@ -35,12 +35,12 @@ module.exports = {
 						console.log(err);
 						return res.status(500).json({
 							success: 0,
-							message: "Database connection error !"
+							message: "Database connection error !",
 						});
 					}
 					return res.status(200).json({
 						message: "Customer saved successfully !",
-						data: results
+						data: results,
 					});
 				});
 			}
@@ -54,7 +54,7 @@ module.exports = {
 			}
 			return res.json({
 				success: 1,
-				data: results
+				data: results,
 			});
 		});
 	},
@@ -69,13 +69,13 @@ module.exports = {
 			if (!results) {
 				return res.json({
 					success: 0,
-					message: "Record not Found"
+					message: "Record not Found",
 				});
 			}
 
 			return res.json({
 				success: 1,
-				data: results
+				data: results,
 			});
 		});
 	},
@@ -86,13 +86,28 @@ module.exports = {
 			if (err) {
 				console.log(err);
 				return res.status(403).json({
-					message: "Database connection error !"
+					message: "Database connection error !",
 				});
 			}
 			return res.status(200).json({
 				success: 1,
-				message: "updated successfully !"
+				message: "updated successfully !",
 			});
+		});
+	},
+
+	getStates: (req, res) => {
+		pool.query("SELECT id,State_Name from states", [], (err, results) => {
+			if (err) {
+				return res.status(403).json({
+					error: err,
+				});
+			} else {
+				return res.status(200).json({
+					message: "All States",
+					data: results,
+				});
+			}
 		});
 	},
 
@@ -105,24 +120,24 @@ module.exports = {
 			if (!results) {
 				return res.json({
 					success: 0,
-					data: "Password || Email doesn't match !"
+					data: "Password || Email doesn't match !",
 				});
 			}
 			const result = compareSync(body.password, results.password);
 			if (result) {
 				results.password = undefined;
 				const jsontoken = sign({ result: results }, "neosoft@1234", {
-					expiresIn: "1h"
+					expiresIn: "1h",
 				});
 				return res.json({
 					success: 1,
 					message: "login successfully",
-					token: jsontoken
+					token: jsontoken,
 				});
 			} else {
 				return res.json({
 					success: 0,
-					data: "Password || Email doest match !"
+					data: "Password || Email doest match !",
 				});
 			}
 		});
@@ -138,13 +153,13 @@ module.exports = {
 			if (!results) {
 				return res.json({
 					success: 0,
-					message: "Record Not Found"
+					message: "Record Not Found",
 				});
 			}
 			return res.json({
 				success: 1,
-				message: "user deleted successfully"
+				message: "user deleted successfully",
 			});
 		});
-	}
+	},
 };

@@ -1,9 +1,11 @@
 const electron = require("electron");
-const { ipcRenderer } = electron;
+const { ipcRenderer, remote } = electron;
 const path = require("path");
-const BrowserWindow = electron.remote.BrowserWindow;
+const BrowserWindow = remote.BrowserWindow;
+const axios = require("axios");
 
 let addWindow;
+let data = [];
 const texts = require("electron").remote.getGlobal("sharedObject").someProperty;
 
 document.getElementById("abc").value = texts;
@@ -20,8 +22,8 @@ function createaddWindow() {
 		parent: electron.remote.getCurrentWindow(),
 		modal: true,
 		webPreferences: {
-			nodeIntegration: true
-		}
+			nodeIntegration: true,
+		},
 	});
 
 	addWindow.webContents.openDevTools();
@@ -60,20 +62,133 @@ function createaddWindow() {
 // 	});
 // }
 
+$(document).ready(function () {
+	axios
+		.get(`http://localhost:3000/api/getinvoices`)
+		.then((response) => {
+			console.log(response.data.data);
+			const invData = response.data.data;
+			return (data = [...invData]);
+		})
+		.catch((error) => {
+			if (error) throw new Error(error);
+		});
+});
+
 const button = document.getElementById("newUser");
-button.addEventListener("click", event => {
+button.addEventListener("click", (event) => {
 	createaddWindow();
 });
 
 const custButton = document.getElementById("newCustomer");
-custButton.addEventListener("click", event => {
+custButton.addEventListener("click", (event) => {
 	ipcRenderer.send("create:customerwindow", "customer");
 });
 
 const invButton = document.getElementById("newInvoice");
-invButton.addEventListener("click", event => {
+invButton.addEventListener("click", (event) => {
 	ipcRenderer.send("create:invoiceWindow", "invoice");
 });
+
+const payButton = document.getElementById("payment");
+payButton.addEventListener("click", (event) => {
+	ipcRenderer.send("create:paymentWindow", "payment_account");
+});
+
+const accButton = document.getElementById("account");
+accButton.addEventListener("click", (event) => {
+	ipcRenderer.send("create:accountWindow", "account");
+});
+
+const recButton = document.getElementById("receipt");
+recButton.addEventListener("click", (event) => {
+	ipcRenderer.send("create:receiptWindow", "receive_account");
+});
+
+const invListButton = document.getElementById("invList");
+invListButton.addEventListener("click", (event) => {
+	generateInvoiceDataTable();
+});
+
+function generateInvoiceDataTable() {
+	let rowIndex;
+	var codeBlock = ` 
+	<thead>
+		<tr>
+		<th>ID</th>
+			<th>INVOICE NO.</th>
+			<th>INVOICE DATE</th>
+			<th>AGENT NAME</th>
+			<th>BILL AMOUNT</th>	   
+		</tr>
+	</thead> 
+`;
+	document.getElementById("invTable").innerHTML = codeBlock;
+
+	$("#invTable").dataTable({
+		paging: true,
+		sort: true,
+		searching: true,
+		language: {
+			searchPlaceholder: "Search records",
+			sSearch: "",
+		},
+		pageLength: 100,
+		data: data,
+		columnDefs: [
+			{
+				render: function (data, type, row) {
+					return new Date(data).toLocaleDateString();
+				},
+				targets: 2,
+			},
+		],
+		columns: [
+			{ data: "Invoice_Id" },
+			{ data: "Invoice_Number" },
+			{ data: "Invoice_Date" },
+			{ data: "Agent_Name" },
+			{ data: "Total_Payable_Amt" },
+		],
+		dom: "Bfrtip",
+		select: true,
+
+		buttons: [
+			{
+				text: "Edit Selected Invoice",
+				action: function (e, dt, node, config) {
+					ipcRenderer.send("customer:data", {
+						customerData: data,
+						index: rowIndex,
+					});
+				},
+
+				enabled: false,
+			},
+		],
+	});
+
+	//------------- Table row selection condition ------
+
+	$("#invTable tbody").on("click", "tr", function () {
+		if ($(this).hasClass("selected")) {
+			$(this).removeClass("selected");
+		} else {
+			$("#invTable").dataTable().$("tr.selected").removeClass("selected");
+			$(this).addClass("selected");
+		}
+	});
+
+	$("#invTable tbody").on("click", "tr", function () {
+		rowIndex = $("#invTable").DataTable().row(this).index();
+		console.log(rowIndex);
+		var selectedRows = $("tr.selected").length;
+		$("#invTable")
+			.DataTable()
+			.button(0)
+			.enable(selectedRows === 1);
+	});
+}
 
 //addWindow.webContents.openDevTools();
 
@@ -163,12 +278,12 @@ invButton.addEventListener("click", event => {
 // 	});
 // });
 
-document.getElementById("newWin").addEventListener("click", () => {
-	ipcRenderer.send("create:window", "newWindow");
-});
+// document.getElementById("newWin").addEventListener("click", () => {
+// 	ipcRenderer.send("create:window", "newWindow");
+// });
 
 ipcRenderer.on("fetchCustomers", (event, data) => {
-	document.getElementById("getCustomers").addEventListener("click", event => {
+	document.getElementById("getCustomers").addEventListener("click", (event) => {
 		let rowIndex;
 		var codeBlock = ` <table id="example" class="display responsive-table datatable-example">
         <thead>
@@ -193,7 +308,7 @@ ipcRenderer.on("fetchCustomers", (event, data) => {
 			searching: true,
 			language: {
 				searchPlaceholder: "Search records",
-				sSearch: ""
+				sSearch: "",
 			},
 			pageLength: 100,
 			data: data,
@@ -203,7 +318,7 @@ ipcRenderer.on("fetchCustomers", (event, data) => {
 				{ data: "last_name" },
 				{ data: "email" },
 				{ data: "mobile" },
-				{ data: "phone" }
+				{ data: "phone" },
 			],
 			dom: "Bfrtip",
 			select: true,
@@ -211,41 +326,31 @@ ipcRenderer.on("fetchCustomers", (event, data) => {
 			buttons: [
 				{
 					text: "Edit selected Customer",
-					action: function(e, dt, node, config) {
+					action: function (e, dt, node, config) {
 						ipcRenderer.send("customer:data", {
 							customerData: data,
-							index: rowIndex
+							index: rowIndex,
 						});
 					},
 
-					enabled: false
-				}
-			]
+					enabled: false,
+				},
+			],
 		});
 
-		$("#example tbody").on("click", "tr", function() {
+		$("#example tbody").on("click", "tr", function () {
 			if ($(this).hasClass("selected")) {
 				$(this).removeClass("selected");
 			} else {
-				$("#example")
-					.dataTable()
-					.$("tr.selected")
-					.removeClass("selected");
+				$("#example").dataTable().$("tr.selected").removeClass("selected");
 				$(this).addClass("selected");
 			}
 
-			console.log(
-				$(this)
-					.children(":first")
-					.text()
-			);
+			console.log($(this).children(":first").text());
 		});
 
-		$("#example tbody").on("click", "tr", function() {
-			rowIndex = $("#example")
-				.DataTable()
-				.row(this)
-				.index();
+		$("#example tbody").on("click", "tr", function () {
+			rowIndex = $("#example").DataTable().row(this).index();
 			console.log(rowIndex);
 			var selectedRows = $("tr.selected").length;
 			$("#example")

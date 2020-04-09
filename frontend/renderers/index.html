@@ -87,10 +87,10 @@
 						<div class="collapsible-body">
 							<ul>
 								<li id="getCustomers"><a href="#">Accordion</a></li>
-								<li id="newWin"><a href="#">Badges</a></li>
-								<li><a href="ui-buttons.html">Buttons</a></li>
-								<li><a href="ui-typography.html">Typography</a></li>
-								<li><a href="ui-cards.html">Cards</a></li>
+								<li id="account"><a href="#">ACCOUNT</a></li>
+								<li id="payment"><a href="#">PAYMENT</a></li>
+								<li id="receipt"><a href="#">RECEIVE</a></li>
+								<li id="invList"><a href="#">Invoice List</a></li>
 								<li><a href="ui-carousel.html">Carousel</a></li>
 								<li><a href="ui-chips.html">Chips</a></li>
 								<li><a href="ui-color.html">Color</a></li>
@@ -150,6 +150,14 @@
 						</div>
 					</div>
 				</div>
+
+				<div class="col s12">
+					<div class="card">
+						<div class="card-content">
+							<table id="invTable"></table>
+						</div>
+					</div>
+				</div>
 			</div>
 		</main>
 
@@ -181,7 +189,7 @@
 		<script src="../assets/js/custom.js"></script>
 		<!-- <script src="../assets/js/table-data.js"></script> -->
 		<script>
-			(function() {
+			(function () {
 				function checkTime(i) {
 					return i < 10 ? "0" + i : i;
 				}
@@ -193,7 +201,7 @@
 						s = checkTime(today.getSeconds());
 					document.getElementById("currentTime").innerHTML =
 						h + ":" + m + ":" + s;
-					t = setTimeout(function() {
+					t = setTimeout(function () {
 						startTime();
 					}, 500);
 				}

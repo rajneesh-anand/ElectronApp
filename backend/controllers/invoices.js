@@ -57,6 +57,26 @@ module.exports = {
 			}
 		);
 	},
+
+	getInvoices: (req, res) => {
+		pool.query(
+			`SELECT i.Invoice_Id,i.Invoice_Number,i.Invoice_Date,i.Total_Payable_Amt,c.first_name as Agent_Name FROM customers c, invoices i where i.Agent_Name =c.id`,
+			[],
+			(error, results, fields) => {
+				if (error) {
+					return res.status(403).json({
+						error: error,
+						message: "Error : Invoice List",
+					});
+				} else {
+					return res.status(200).json({
+						message: "Success",
+						data: results,
+					});
+				}
+			}
+		);
+	},
 	getCustomers: (req, res) => {
 		fetchCustomers((err, results) => {
 			if (err) {

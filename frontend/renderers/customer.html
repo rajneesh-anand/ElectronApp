@@ -28,10 +28,10 @@
 			<div class="row" style="margin-top: 15px;">
 				<form  method="post" class="col s12">
 					<div class="row">
-						<div class="input-field col s4">
+						<div class="input-field col s6">
 							<i class="material-icons prefix">person</i>
 							<input
-								placeholder="Placeholder"
+								placeholder=""
 								id="first_name"
 								type="text"
 								class="validate"
@@ -40,7 +40,7 @@
 							/>
 							<label for="first_name">First Name</label>
 						</div>
-						<div class="input-field col s4">
+						<div class="input-field col s6">
 							<i class="material-icons prefix">person</i>
 							<input
 								id="last_name"
@@ -51,39 +51,29 @@
 							/>
 							<label for="last_name">Last Name</label>
 						</div>
-						<div class="input-field col s4">
-							<i class="material-icons prefix">person</i>
-							<input
-								id="last_name"
-								type="text"
-								name="last_name"
-								class="validate"
-								required
-							/>
-							<label for="last_name">Last Name</label>
-						</div>
+					
 					</div>
 					<div class="row">
 						<div class="input-field col s6">
 							<i class="material-icons prefix">add_location</i>
 							<input
-								id="icon_prefix"
+								id="address_one"
 								type="text"
-								name="address_line_one"
+								name="address_one"
 								class="validate"
 								required
 							/>
-							<label for="icon_prefix">Address Line </label>
+							<label for="address_one">Address Line One</label>
 						</div>
 						<div class="input-field col s6">
 							<i class="material-icons prefix">add_location</i>
 							<input
-								id="icon_telephone"
+								id="address_two"
 								name="address_line_two"
 								type="text"
 								class="validate"
 							/>
-							<label for="icon_telephone">Address Line Two</label>
+							<label for="address_two">Address Line Two</label>
 						</div>
 					</div>
 
@@ -111,14 +101,11 @@
 							/>
 							<label for="pincode">Pin Code</label>
 						</div>
-						<div class="input-field col s4">
-							<select name="state">
-								<option value="" disabled selected>Choose State</option>
-								<option value="1">Delhi</option>
-								<option value="2">Bihar</option>
-								<option value="3">Punjab</option>
+						<div class="col s4">
+							<label>STATE</label>
+							<select name="state" class="browser-default stateName">
+								<option value="" disabled selected>Select State</option>
 							</select>
-							<label>State</label>
 						</div>
                     </div>
                     
@@ -163,12 +150,11 @@
 								class="validate"
 								required
 							/>
-							<label for="gstin">GST No</label>
+							<label for="gstin">GSTIN</label>
 						</div>
 				
 					<div class="right-align">
-						<!-- <input type="submit" id="btnSave" class="waves-effect waves-light btn"><i class="material-icons right">cloud</i>Save & exit</a> -->
-						<!-- <input type="submit" value="Save" id="closeBtn" /> -->
+				
 						<button
 							class="btn waves-effect waves-light"
 							type="submit"

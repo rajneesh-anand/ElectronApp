@@ -91,10 +91,35 @@ const customerData = async () => {
 
 customerData().then((data) => {
 	mainWindow.webContents.on("did-finish-load", (event) => {
-		console.log(data);
 		mainWindow.webContents.send("fetchCustomers", data);
 	});
 });
+
+//Fetch Accounts Data
+
+const accountData = async () => {
+	return await axios
+		.get(`http://localhost:3000/api/accounts`)
+		.then((response) => {
+			return response.data.data;
+		})
+		.catch((error) => {
+			if (error) throw new Error(error);
+		});
+};
+
+// Fetch States
+
+const statesData = async () => {
+	return await axios
+		.get(`http://localhost:3000/api/states`)
+		.then((response) => {
+			return response.data.data;
+		})
+		.catch((error) => {
+			if (error) throw new Error(error);
+		});
+};
 
 // Fetch Invoice Number
 
@@ -297,7 +322,7 @@ ipcMain.on("create:customerwindow", (event, fileName) => {
 	let win = new BrowserWindow({
 		resizable: false,
 		height: height,
-		width: width - 66,
+		width: width - 300,
 		frame: false,
 		title: "Add Customer",
 		parent: mainWindow,
@@ -310,6 +335,12 @@ ipcMain.on("create:customerwindow", (event, fileName) => {
 	win.webContents.openDevTools();
 
 	win.loadURL(modalPath);
+
+	win.webContents.on("did-finish-load", (event) => {
+		statesData().then((data) => {
+			win.webContents.send("fetchStates", data);
+		});
+	});
 });
 
 ipcMain.on("create:invoiceWindow", (event, fileName) => {
@@ -368,6 +399,108 @@ ipcMain.on("add:invoice", async function (event, args) {
 			event.reply("invoice:added", error.response.data.message);
 		});
 });
+
+//----------- Payment --------------
+
+ipcMain.on("create:paymentWindow", (event, fileName) => {
+	const modalPath = path.join(
+		`file://${__dirname}/renderers/` + fileName + `.html`
+	);
+
+	let pWin = new BrowserWindow({
+		resizable: false,
+		height: 500,
+		width: 900,
+		frame: false,
+		title: "Payment",
+		parent: mainWindow,
+		modal: true,
+		webPreferences: {
+			nodeIntegration: true,
+		},
+	});
+
+	pWin.webContents.openDevTools();
+
+	pWin.loadURL(modalPath);
+
+	pWin.webContents.on("did-finish-load", (event) => {
+		customerData().then((data) => {
+			pWin.webContents.send("fetchCustomers", data);
+		});
+
+		accountData().then((args) => {
+			console.log(args);
+			pWin.webContents.send("fetchAccounts", args);
+		});
+	});
+});
+
+//--------------------------
+// -----Receipt Window ----
+
+ipcMain.on("create:receiptWindow", (event, fileName) => {
+	const modalPath = path.join(
+		`file://${__dirname}/renderers/` + fileName + `.html`
+	);
+
+	let rWin = new BrowserWindow({
+		resizable: false,
+		height: 500,
+		width: 900,
+		frame: false,
+		title: "Payment",
+		parent: mainWindow,
+		modal: true,
+		webPreferences: {
+			nodeIntegration: true,
+		},
+	});
+
+	rWin.webContents.openDevTools();
+
+	rWin.loadURL(modalPath);
+
+	rWin.webContents.on("did-finish-load", (event) => {
+		customerData().then((data) => {
+			rWin.webContents.send("fetchCustomers", data);
+		});
+
+		accountData().then((args) => {
+			console.log(args);
+			rWin.webContents.send("fetchAccounts", args);
+		});
+	});
+});
+
+//-----------------------
+
+//---Account ---
+
+ipcMain.on("create:accountWindow", (event, fileName) => {
+	const modalPath = path.join(
+		`file://${__dirname}/renderers/` + fileName + `.html`
+	);
+
+	let aWin = new BrowserWindow({
+		resizable: false,
+		height: 400,
+		width: 700,
+		frame: false,
+		title: "Account",
+		parent: mainWindow,
+		modal: true,
+		webPreferences: {
+			nodeIntegration: true,
+		},
+	});
+
+	aWin.webContents.openDevTools();
+
+	aWin.loadURL(modalPath);
+});
+
+//-----------------
 
 // function getPDF(formdata) {
 // 	return axios.get(`http://localhost:3000/api/generatepdf`, {
