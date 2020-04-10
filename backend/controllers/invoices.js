@@ -1,5 +1,6 @@
 const {
 	create,
+	update,
 	fetchInvoices,
 	fetchInvoiceById,
 	setInvoice,
@@ -58,6 +59,24 @@ module.exports = {
 		);
 	},
 
+	updateInvoice: (req, res) => {
+		const body = req.body;
+		console.log(body);
+
+		update(body, (err, results) => {
+			if (err) {
+				return res.status(500).json({
+					success: 0,
+					message: "Database connection error !",
+				});
+			}
+			return res.status(200).json({
+				message: "Invoice updated successfully !",
+				data: results,
+			});
+		});
+	},
+
 	getInvoices: (req, res) => {
 		pool.query(
 			`SELECT i.Invoice_Id,i.Invoice_Number,i.Invoice_Date,i.Total_Payable_Amt,c.first_name as Agent_Name FROM customers c, invoices i where i.Agent_Name =c.id`,
@@ -90,7 +109,30 @@ module.exports = {
 		});
 	},
 
+	getInvoiceByID: (req, res) => {
+		const invoiceId = req.params.id;
+		console.log(invoiceId);
+		pool.query(
+			`SELECT * from invoices where Invoice_Id=?`,
+			[invoiceId],
+			(error, results, fields) => {
+				if (error) {
+					return res.status(403).json({
+						error: error,
+						message: "Error : Invoice Update",
+					});
+				} else {
+					return res.status(200).json({
+						message: "Success",
+						data: results,
+					});
+				}
+			}
+		);
+	},
+
 	getCustomerById: (req, res) => {
+		console.log(`object`);
 		const id = req.params.id;
 		fetchCustomerById(id, (err, results) => {
 			if (err) {

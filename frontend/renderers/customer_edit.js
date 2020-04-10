@@ -1,9 +1,10 @@
 const electron = require("electron");
 const remote = electron.remote;
 const { ipcRenderer } = electron;
+const axios = require("axios");
 
 function ValidateNumbers(e) {
-	document.oncontextmenu = function() {
+	document.oncontextmenu = function () {
 		return false;
 	};
 	var key = document.all ? e.keyCode : e.which;
@@ -23,73 +24,104 @@ function isNumberKey(evt, obj) {
 	return true;
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
 	M.updateTextFields();
 	$("select").formSelect();
 
 	const btnClose = document.getElementById("btnClose");
-	btnClose.addEventListener("click", event => {
+	btnClose.addEventListener("click", (event) => {
 		const window = remote.getCurrentWindow();
 		window.hide();
 	});
+});
 
-	const isvalid = () => {
-		let firstName = document.getElementById("first_name").value;
-		let lastName = document.getElementById("last_name").value;
-		let gstin = document.getElementById("gstin").value;
-		let city = document.getElementById("city").value;
-		let pincode = document.getElementById("pincode").value;
+const isvalid = () => {
+	let firstName = document.getElementById("first_name").value;
+	let lastName = document.getElementById("last_name").value;
+	let gstin = document.getElementById("gstin").value;
+	let city = document.getElementById("city").value;
+	let pincode = document.getElementById("pincode").value;
 
-		if (
-			firstName === "" ||
-			lastName === "" ||
-			gstin === "" ||
-			city === "" ||
-			pincode === ""
-		) {
-			return false;
-		} else {
-			return true;
-		}
-	};
+	if (
+		firstName === "" ||
+		lastName === "" ||
+		gstin === "" ||
+		city === "" ||
+		pincode === ""
+	) {
+		return false;
+	} else {
+		return true;
+	}
+};
 
-	let form = document.querySelector("form");
+let form = document.querySelector("form");
 
-	form.addEventListener("submit", function(event) {
-		event.preventDefault();
-		if (isvalid) {
-			var data = new FormData(form);
-			ipcRenderer.send("update:customer", {
-				id: data.get("id"),
-				first_name: data.get("first_name"),
-				last_name: data.get("last_name"),
-				address_line_one: data.get("address_line_one"),
-				address_line_two: data.get("address_line_two"),
-				city: data.get("city"),
-				pincode: data.get("pincode"),
-				state: data.get("state"),
-				phone: data.get("phone"),
-				mobile: data.get("mobile"),
-				gstin: data.get("gstin"),
-				email: data.get("email")
+form.addEventListener("submit", function (event) {
+	event.preventDefault();
+	if (isvalid()) {
+		var data = new FormData(form);
+		let customerData = {
+			id: data.get("id"),
+			first_name: data.get("first_name"),
+			last_name: data.get("last_name"),
+			address_line_one: data.get("address_one"),
+			address_line_two: data.get("address_two"),
+			city: data.get("city"),
+			pincode: data.get("pincode"),
+			state: data.get("state"),
+			phone: data.get("phone"),
+			mobile: data.get("mobile"),
+			gstin: data.get("gstin"),
+			email: data.get("email"),
+		};
+
+		axios
+			.put(
+				`http://localhost:3000/api/customer`,
+				customerData,
+
+				{
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json",
+					},
+				}
+			)
+			.then((response) => {
+				alert(response.data.message);
+			})
+			.catch((error) => {
+				alert(error.response.data.message);
 			});
-		}
+		$(":input").prop("disabled", true);
+	}
+});
+
+ipcRenderer.on("fetchStates", (event, data) => {
+	var Options = "";
+	data.map(function (element, i) {
+		Options =
+			Options + `<option value='${element.id}'>${element.State_Name}</option>`;
 	});
+
+	$(".stateName").append(Options);
+	$(".stateName").formSelect();
 });
 
 ipcRenderer.on("sendCustomerData", (event, data) => {
 	document.getElementById("id").value = data.id;
 	document.getElementById("first_name").value = data.first_name;
 	document.getElementById("last_name").value = data.last_name;
-	document.getElementById("address_line_one").value = data.address_line_one;
-	document.getElementById("address_line_two").value = data.address_line_two;
+	document.getElementById("address_one").value = data.address_line_one;
+	document.getElementById("address_two").value = data.address_line_two;
 	document.getElementById("city").value = data.city;
 	document.getElementById("pincode").value = data.pincode;
 	document.getElementById("mobile").value = data.mobile;
 	document.getElementById("phone").value = data.phone;
 	document.getElementById("email").value = data.email;
 	document.getElementById("gstin").value = data.gstin;
-	const selectedCategory = document.querySelector("#state");
+	const selectedCategory = document.querySelector(".stateName");
 	const materializeSelectedCategory = M.FormSelect.init(selectedCategory);
 
 	selectedCategory.value = data.state;
@@ -100,8 +132,4 @@ ipcRenderer.on("sendCustomerData", (event, data) => {
 		event.initEvent("change", true, true);
 	}
 	selectedCategory.dispatchEvent(event);
-});
-
-ipcRenderer.on("customer:updated", (event, args) => {
-	alert(args);
 });

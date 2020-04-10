@@ -9,7 +9,6 @@ const axios = require("axios");
 require("electron-reload")(__dirname);
 
 let mainWindow;
-let customerWindow;
 global.sharedObject = {
 	someProperty: "",
 };
@@ -81,8 +80,8 @@ userData().then((data) => {
 const customerData = async () => {
 	return await axios
 		.get(`http://localhost:3000/api/customers`)
-		.then((Response) => {
-			return Response.data.data;
+		.then((response) => {
+			return response.data.data;
 		})
 		.catch((error) => {
 			if (error) throw new Error(error);
@@ -258,50 +257,39 @@ ipcMain.on("update:customer", async function (event, args) {
 		});
 });
 
-ipcMain.on("customer:data", function (event, args) {
+ipcMain.on("customer:edit", function (event, args) {
 	const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 	const modalPath = path.join(
 		`file://${__dirname}/renderers/customer_edit.html`
 	);
 
-	// const modalPath = path.join("file://", __dirname, "customer.html");
-
-	customerWindow = new BrowserWindow({
+	let cuseditWindow = new BrowserWindow({
 		resizable: false,
-		height: height,
-		width: width * 0.9,
+		height: 650,
+		width: width - 350,
 		frame: false,
 		title: "Edit Customer",
 		parent: mainWindow,
-		show: false,
 		modal: true,
 		webPreferences: {
 			nodeIntegration: true,
 		},
 	});
 
-	// customerWindow.webContents.openDevTools();
+	cuseditWindow.webContents.openDevTools();
 
-	customerWindow.loadURL(modalPath);
+	cuseditWindow.loadURL(modalPath);
 
-	const rowIndex = args.index;
-	const data = args.customerData[rowIndex];
-
-	customerWindow.once("ready-to-show", () => {
-		customerWindow.show();
+	cuseditWindow.webContents.on("did-finish-load", (event) => {
+		statesData().then((data) => {
+			cuseditWindow.webContents.send("fetchStates", data);
+		});
+		cuseditWindow.webContents.send("sendCustomerData", args.customerData);
 	});
 
-	customerWindow.webContents.once("dom-ready", () => {
-		customerWindow.webContents.send("sendCustomerData", data);
+	cuseditWindow.on("closed", () => {
+		cuseditWindow = null;
 	});
-
-	customerWindow.on("closed", () => {
-		customerWindow = null;
-	});
-
-	// customerWindow.webContents.send("sendCustomerData", args);
-
-	// event.reply("sendCustomerData", args);
 });
 
 // ipcMain.on("close:window", (event, args) => {
@@ -314,15 +302,15 @@ ipcMain.on("customer:data", function (event, args) {
 
 ipcMain.on("create:customerwindow", (event, fileName) => {
 	const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-	console.log(width - 66);
+
 	const modalPath = path.join(
 		`file://${__dirname}/renderers/` + fileName + `.html`
 	);
 
 	let win = new BrowserWindow({
 		resizable: false,
-		height: height,
-		width: width - 300,
+		height: 650,
+		width: width - 350,
 		frame: false,
 		title: "Add Customer",
 		parent: mainWindow,
@@ -378,6 +366,56 @@ ipcMain.on("create:invoiceWindow", (event, fileName) => {
 });
 
 //------- Invoice Section ---------
+//----------nvoice Edit------------
+
+const fetchInvoiceDataByID = async (id) => {
+	return await axios
+		.get(`http://localhost:3000/api/invoice/${id}`)
+		.then((response) => {
+			return response.data.data;
+		})
+		.catch((error) => {
+			if (error) throw new Error(error);
+		});
+};
+
+ipcMain.on("invoice:edit", (event, args) => {
+	console.log(args);
+	const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+	const modalPath = path.join(
+		`file://${__dirname}/renderers/invoice_edit.html`
+	);
+
+	let inveditWin = new BrowserWindow({
+		resizable: false,
+		height: height,
+		width: width - 66,
+		frame: false,
+		title: "Add Invoice",
+		parent: mainWindow,
+		modal: true,
+		webPreferences: {
+			nodeIntegration: true,
+		},
+	});
+
+	inveditWin.webContents.openDevTools();
+
+	inveditWin.loadURL(modalPath);
+
+	inveditWin.webContents.on("did-finish-load", (event) => {
+		customerData().then((data) => {
+			inveditWin.webContents.send("fetchCustomers", data);
+		});
+
+		fetchInvoiceDataByID(args.invoiceId).then((invData) => {
+			console.log(invData);
+			inveditWin.webContents.send("sendInvoiceDataForEdit", invData);
+		});
+	});
+});
+
+//-----------------------
 
 ipcMain.on("add:invoice", async function (event, args) {
 	await axios
@@ -500,6 +538,11 @@ ipcMain.on("create:accountWindow", (event, fileName) => {
 	aWin.loadURL(modalPath);
 });
 
+ipcMain.on("fetchCustomers", (event, args) => {
+	customerData().then((data) => {
+		event.reply("customerData", data);
+	});
+});
 //-----------------
 
 // function getPDF(formdata) {

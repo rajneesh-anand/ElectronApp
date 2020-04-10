@@ -44,7 +44,7 @@
 			class="row"
 			style="display: flex; padding-left: 1rem;padding-right: 1rem;"
 		>
-			<h6 class="flow-text" style="color: rgb(5, 26, 14);">NEW INVOICE</h6>
+			<h6 class="flow-text" style="color: rgb(5, 26, 14);">EDIT INVOICE</h6>
 
 			<a id="btnClose" style="margin-left: auto; padding-top: 1rem;">
 				<i class="material-icons right">close</i></a
@@ -58,8 +58,7 @@
 						<input
 							placeholder=""
 							id="invoice_no"
-							type="text"
-							class="validate"
+							type="text"						
 							name="invoice_no"
 							readonly
 						/>
@@ -99,7 +98,7 @@
 					</div>
 					<div class=" col s5">
 						<label>AGENT NAME</label>
-						<select name="agent" class="browser-default agentName">		
+						<select name="agent" id ="agentName" class="browser-default agentName">		
 							<option value="" disabled selected>Select Agent</option>					
 						  </select>						
 					</div>
@@ -107,7 +106,8 @@
 				<div class="row" style="margin-bottom: 0px !important;">
 					<div class="input-field col s3">
 						<i class="material-icons prefix">add_location</i>
-						<input
+                        <input
+                        placeholder=""
 							id="ship_name"
 							name="ship_name"
 							type="text"
@@ -117,7 +117,7 @@
 					</div>
 					<div class="input-field col s3">
 						<i class="material-icons prefix">add_location</i>
-						<input
+						<input   placeholder=""
 							id="cruise"
 							type="text"
 							name="cruise"
@@ -128,7 +128,7 @@
 					</div>
 					<div class="input-field col s2">
 						<i class="material-icons prefix">add_location</i>
-						<input
+						<input   placeholder=""
 							id="bookings"
 							type="text"
 							name="bookings"
@@ -139,7 +139,7 @@
 					</div>
 					<div class="input-field col s2">
 						<i class="material-icons prefix">near_me</i>
-						<input
+						<input   placeholder=""
 							id="cabin"
 							name="cabin"
 							type="text"
@@ -151,7 +151,7 @@
 					</div>
 					<div class="input-field col s2">
 						<i class="material-icons prefix">near_me</i>
-						<input
+						<input   placeholder=""
 							id="cat_bkg"
 							name="cat_bkg"
 							type="text"
@@ -166,7 +166,7 @@
 				<div class="row" style="margin-bottom: 0px !important;">
 					<div class="input-field col s4">
 						<i class="material-icons prefix">phone</i>
-						<input
+						<input   placeholder=""
 							id="name"
 							type="text"
 							name="name"
@@ -177,7 +177,7 @@
 					</div>
 					<div class="input-field col s2">
 						<i class="material-icons prefix">phone_android</i>
-						<input
+						<input   placeholder=""
 							id="nationality"
 							name="nationality"
 							type="text"
@@ -189,39 +189,39 @@
 					</div>
 					<div class="input-field col s2">
 						<i class="material-icons prefix">add_location</i>
-						<input
+						<input   placeholder=""
 							id="adults"
 							type="text"
 							name="adults"
 							class="validate"
 							required
 							onkeypress="return ValidateNumbers(event)"
-							onkeyup="GetTotal(this);"
+							onkeyup="GetTotal();"
 						/>
 						<label for="adults">Adults </label>
 					</div>
 					<div class="input-field col s2">
 						<i class="material-icons prefix">add_location</i>
-						<input
+						<input   placeholder=""
 							id="children"
 							type="text"
 							name="children"
 							class="validate"
 														
 							onkeypress="return ValidateNumbers(event)"
-							onkeyup="GetTotal(this);"
+							onkeyup="GetTotal();"
 						/>
 						<label for="children">Children </label>
 					</div>
 					<div class="input-field col s2">
 						<i class="material-icons prefix">add_location</i>
-						<input
+						<input   placeholder=""
 							id="infants"
 							type="text"
 							name="infants"
 							class="validate"							
 							onkeypress="return ValidateNumbers(event)"
-							onkeyup="GetTotal(this);"
+							onkeyup="GetTotal();"
 						/>
 						<label for="infants">Infants </label>
 					</div>
@@ -235,125 +235,125 @@
 
 						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">attach_money</i> -->
-							<input
+							<input   placeholder=""
 								id="price_adults"
 								name="price_adults"
 								type="text"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
-								onkeyup="GetTotal(this);"
+								onkeyup="GetTotal();"
 								required
 							/>
 							<label for="price_adults">Price : Adults </label>
 						</div>
 						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">add_location</i> -->
-							<input
+							<input   placeholder=""
 								id="price_children"
 								type="text"
 								name="price_children"
 								class="validate"
 							
 								onkeypress="return isNumberKey(event,this);"
-								onkeyup="GetTotal(this);"
+								onkeyup="GetTotal();"
 							/>
 							<label for="price_children">Price : Children </label>
 						</div>
 
 						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">add_location</i> -->
-							<input
+							<input   placeholder=""
 								id="price_infants"
 								type="text"
 								name="price_infants"
 								class="validate"
 							
 								onkeypress="return isNumberKey(event,this);"
-								onkeyup="GetTotal(this);"
+								onkeyup="GetTotal();"
 							/>
 							<label for="price_infants">Price : Infants </label>
 						</div>
 						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone</i> -->
-							<input
+							<input   placeholder=""
 								id="comm"
 								type="text"
 								name="comm"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
-								onkeyup="GetTotal(this);"
+								onkeyup="GetTotal();"
 							/>
 							<label for="comm">Commi.. Rate(%)</label>
 						</div>
 						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone_android</i> -->
-							<input
+							<input   placeholder=""
 								id="ncf"
 								name="ncf"
 								type="tel"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
-								onkeyup="GetTotal(this);"
+								onkeyup="GetTotal();"
 							/>
 							<label for="ncf">NCF</label>
 						</div>
 						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone</i> -->
-							<input
+							<input   placeholder=""
 								id="tax"
 								type="text"
 								name="tax"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
-								onkeyup="GetTotal(this);"
+								onkeyup="GetTotal();"
 							/>
 							<label for="tax">TAX</label>
 						</div>
 						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone</i> -->
-							<input
+							<input   placeholder=""
 								id="gratuity"
 								type="text"
 								name="gratuity"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
-								onkeyup="GetTotal(this);"
+								onkeyup="GetTotal();"
 							/>
 							<label for="gratuity">Gratuity</label>
 						</div>
 						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone</i> -->
-							<input
+							<input   placeholder=""
 								id="holiday"
 								type="text"
 								name="holiday"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
-								onkeyup="GetTotal(this);"
+								onkeyup="GetTotal();"
 							/>
 							<label for="holiday">Holiday Surcharge</label>
 						</div>
 						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone</i> -->
-							<input
+							<input   placeholder=""
 								id="misc"
 								type="text"
 								name="misc"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
-								onkeyup="GetTotal(this);"
+								onkeyup="GetTotal();"
 							/>
 							<label for="misc">Misc..Expense</label>
 						</div>
 						<div class="input-field col s4">
 							<!-- <i class="material-icons prefix">phone</i> -->
-							<input
+							<input   placeholder=""
 								id="tds"
 								type="text"
 								name="tds"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
-								onkeyup="GetTotal(this);"
+								onkeyup="GetTotal();"
 							/>
 							<label for="tds">TDS</label>
 						</div>
@@ -369,28 +369,28 @@
 					
                         <div class="input-field col s3">							
 							<!-- <i class="material-icons prefix">phone</i> -->
-                            <input
+                            <input   placeholder=""
                             disabled
 								id="token"
 								type="text"
 								name="token"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
-								onkeyup="GetTotal(this);"
+								onkeyup="GetTotal();"
 							/>
 							<label for="token">Token Amount </label>
 						</div>
 						
                         <div class="input-field col s2">							
 							<!-- <i class="material-icons prefix">phone</i> -->
-                            <input
+                            <input   placeholder=""
                             
 								id="roe"
 								type="text"
 								name="roe"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
-									onkeyup="GetTotal(this);"
+									onkeyup="GetTotal();"
 							
 							/>
 							<label for="roe">R.O.E </label>
@@ -399,7 +399,7 @@
 							<div class="switch ">
 								<label>
 									GST
-									<input id="gst-switch"  type="checkbox" />
+									<input id="gst-switch" type="checkbox" />
 									<span class="lever"></span>
 								</label>
 							</div>
@@ -407,39 +407,39 @@
 						</div>
 						<div class="input-field col s3">
 							<!-- <i class="material-icons prefix">phone</i> -->
-							<input
+							<input  placeholder=""
 							
 								id="cgst"
 								type="text"
 								name="cgst"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
-									onkeyup="GetTotal(this);"
+									onkeyup="GetTotal();"
 							/>
 							<label for="cgst">CGST </label>
 						</div>
 						<div class="input-field col s3">
 							<!-- <i class="material-icons prefix">phone</i> -->
-							<input
+							<input   placeholder=""
 							
 								id="sgst"
 								type="text"
 								name="sgst"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
-									onkeyup="GetTotal(this);"
+									onkeyup="GetTotal();"
 							/>
 							<label for="sgst">SGST </label>
 						</div>
 						<div class="input-field col s3">
 							<!-- <i class="material-icons prefix">phone</i> -->
-							<input							
+							<input		   placeholder=""					
 								id="igst"
 								type="text"
 								name="igst"
 								class="validate"
 								onkeypress="return isNumberKey(event,this);"
-									onkeyup="GetTotal(this);"
+									onkeyup="GetTotal();"
 							/>
 							<label for="igst">IGST </label>
 						</div>
@@ -550,7 +550,7 @@
 	<script src="../assets/js/jsPdf_Plugins.js"></script>
 	<script src="../assets/js/Roboto-Bold-bold.js"></script>
 	<script src="../assets/js/customFonts.js"></script>
-		<script src="./invoice.js"></script>
+		<script src="./invoice_edit.js"></script>
 		<!-- <script src="./pdf-generator.js"></script> -->
 	
 

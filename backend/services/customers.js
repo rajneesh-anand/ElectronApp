@@ -52,7 +52,7 @@ module.exports = {
 	},
 	fetchCustomers: (callBack) => {
 		pool.query(
-			`SELECT c.id,c.first_name,c.last_name,c.address_line_one,c.address_line_two,c.city,c.pincode,c.gstin,s.state_name FROM customers c, states s where c.state =s.id`,
+			`SELECT c.id,c.first_name,c.last_name,c.address_line_one,c.address_line_two,c.city,c.pincode,c.mobile,c.email,c.phone,c.gstin,s.State_Name FROM customers c, states s where c.state =s.id`,
 			[],
 			(error, results, fields) => {
 				if (error) {

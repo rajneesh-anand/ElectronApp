@@ -69,7 +69,7 @@ function thFormat(num) {
 	return num_parts.join(".");
 }
 
-function GetTotal(obj) {
+function GetTotal() {
 	val1 =
 		document.getElementById("adults").value === ""
 			? 0
@@ -187,7 +187,7 @@ function GetTotal(obj) {
 	//--------------------------------
 
 	if ($("#gst-switch").is(":checked")) {
-		gross_amount = parseFloat(net_amount).toFixed(2);
+		gross_amount = (parseFloat(net_amount) - parseFloat(total_gst)).toFixed(2);
 		document.getElementById("total").innerHTML = parseFloat(
 			gross_amount
 		).toFixed(2);
@@ -259,6 +259,55 @@ function formattedDate(dateValue) {
 }
 
 // Send Form Data to Server
+
+function dateddmmmyyyy(args) {
+	let event = new Date(`${args}`);
+	let month = event.getMonth();
+	let date = event.getDate();
+	let year = event.getFullYear();
+
+	switch (month) {
+		case 0:
+			month = "Jan";
+			break;
+		case 1:
+			month = "Feb";
+			break;
+		case 2:
+			month = "Mar";
+			break;
+		case 3:
+			month = "Apr";
+			break;
+		case 4:
+			month = "May";
+			break;
+		case 5:
+			month = "Jun";
+			break;
+		case 6:
+			month = "Jul";
+			break;
+
+		case 7:
+			month = "Aug";
+			break;
+		case 8:
+			month = "Sep";
+			break;
+		case 9:
+			month = "Oct";
+			break;
+		case 10:
+			month = "Nov";
+			break;
+		case 11:
+			month = "Dec";
+			break;
+	}
+
+	return `${date} ${month} ${year}`;
+}
 
 const isvalid = () => {
 	let name = document.getElementById("name").value;
@@ -342,7 +391,7 @@ form.addEventListener("submit", function (event) {
 		};
 
 		axios
-			.post(`http://localhost:3000/api/invoice`, invoiceData, {
+			.put(`http://localhost:3000/api/invoice`, invoiceData, {
 				headers: {
 					Accept: "application/json",
 					"Content-Type": "application/json",
@@ -369,12 +418,11 @@ ipcRenderer.on("fetchCustomers", (event, data) => {
 	$(".agentName").formSelect();
 });
 
-ipcRenderer.on("sendInvoiceNumber", (event, args) => {
-	let extractInvoice = args[0];
-	document.getElementById("invoice_no").value =
-		extractInvoice["@Invoice_Number"];
-});
-
+// ipcRenderer.on("sendInvoiceNumber", (event, args) => {
+// 	let extractInvoice = args[0];
+// 	document.getElementById("invoice_no").value =
+// 		extractInvoice["@Invoice_Number"];
+// });
 var switchStatus = false;
 $("#my-switch").on("change", function () {
 	if ($(this).is(":checked")) {
@@ -387,8 +435,11 @@ $("#my-switch").on("change", function () {
 		$("#token").prop("disabled", true);
 	}
 });
+
 var gstSwitchStatus = false;
 $("#gst-switch").on("change", function () {
+	GetTotal();
+
 	if ($(this).is(":checked")) {
 		gstSwitchStatus = $(this).is(":checked");
 		gross_amount = parseFloat(net_amount).toFixed(2);
@@ -404,9 +455,9 @@ $("#gst-switch").on("change", function () {
 	}
 });
 
-ipcRenderer.on("invoice:added", (event, args) => {
-	alert(args);
-});
+// ipcRenderer.on("invoice:added", (event, args) => {
+// 	alert(args);
+// });
 
 //--- Invoice PDF Generation ---
 
@@ -899,4 +950,63 @@ function generateInvoice() {
 
 document.getElementById("download").addEventListener("click", () => {
 	generateInvoice();
+});
+
+function setInvoiceData(data) {
+	console.log(data);
+	document.getElementById("invoice_no").value = data.Invoice_Number;
+	document.getElementById("invoice_date").value = dateddmmmyyyy(
+		data.Invoice_Date
+	);
+	document.getElementById("departure_date").value = dateddmmmyyyy(
+		data.Departure_Date
+	);
+	document.getElementById("currency").value = data.Currency;
+	document.getElementById("agentName").value = data.Agent_Name;
+	document.getElementById("ship_name").value = data.Cruise_Ship;
+	document.getElementById("cruise").value = data.Cruise;
+	document.getElementById("bookings").value = data.Booking;
+	document.getElementById("cabin").value = data.Cabin;
+	document.getElementById("cat_bkg").value = data.Cat_Bkg;
+	document.getElementById("name").value = data.Pass_Name;
+	document.getElementById("nationality").value = data.Nationality;
+	document.getElementById("adults").value = data.Adults;
+	document.getElementById("children").value = data.Children;
+	document.getElementById("infants").value = data.Infants;
+	document.getElementById("price_adults").value = data.Adults_Rate;
+	document.getElementById("price_children").value = data.Children_Rate;
+	document.getElementById("price_infants").value = data.Infants_Rate;
+	document.getElementById("comm").value = data.Comm_Rate;
+	document.getElementById("ncf").value = data.NCF;
+	document.getElementById("tax").value = data.TAX;
+	document.getElementById("gratuity").value = data.Grat;
+	document.getElementById("holiday").value = data.HS;
+	document.getElementById("misc").value = data.Misc;
+	document.getElementById("tds").value = data.TDS;
+	document.getElementById("my-switch").value =
+		data.Token === 0
+			? $("#my-switch").prop("checked", false)
+			: $("#my-switch").prop("checked", true);
+	document.getElementById("token").value = data.Token_Amt;
+	document.getElementById("roe").value = data.ROE;
+	document.getElementById("gst-switch").value =
+		data.GST === 0
+			? $("#gst-switch").prop("checked", false)
+			: $("#gst-switch").prop("checked", true);
+	document.getElementById("cgst").value = data.CGST;
+	document.getElementById("sgst").value = data.SGST;
+	document.getElementById("igst").value = data.IGST;
+	document.getElementById("base_amt").innerHTML = data.Base_Amt;
+	document.getElementById("comm_amt").innerHTML = data.Comm_Amt;
+	document.getElementById("ncf_amt").innerHTML = data.NCF_Amt;
+	document.getElementById("tax_amt").innerHTML = data.TAX_Amt;
+	document.getElementById("hs_amt").innerHTML = data.HS_Amt;
+	document.getElementById("gt_amt").innerHTML = data.Grat_Amt;
+	document.getElementById("tds_amt").innerHTML = data.TDS_Amt;
+	document.getElementById("gst_amt").innerHTML = data.GST_Amt;
+	document.getElementById("total").innerHTML = data.Total_Payable_Amt;
+}
+
+ipcRenderer.on("sendInvoiceDataForEdit", (event, args) => {
+	setInvoiceData(args[0]);
 });
