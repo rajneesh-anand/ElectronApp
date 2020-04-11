@@ -118,7 +118,7 @@ invListButton.addEventListener("click", (event) => {
 
 function printInvoicePdf() {
 	axios
-		.get(`http://localhost:3000/api/printinvoicepdf`, invoiceData, {
+		.get(`http://localhost:3000/api/printinvoicepdf`, , {
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json",
