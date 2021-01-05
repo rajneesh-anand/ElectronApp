@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@nativedocuments/docx-wasm": "^2.2.13-1561490777",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "docxtemplater": "^3.17.5",
     "electron-window-state": "^5.0.3",
     "handlebars": "^4.7.6",
